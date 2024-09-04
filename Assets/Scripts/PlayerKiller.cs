@@ -11,6 +11,7 @@ public class PlayerKiller : NetworkBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip lightSwitch;
     [SerializeField] private AudioClip gunShot;
+    [SerializeField] private NetworkObject deadBody;
 
     public static PlayerKiller instance;
     // Start is called before the first frame update
@@ -26,12 +27,21 @@ public class PlayerKiller : NetworkBehaviour
 
     private IEnumerator KillSequence(SpoonsPlayer player)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         DimScreenRpc();
-        yield return new WaitForSeconds(1f);
+        SpoonsPlayer.localInstance.RemovePlayer(player);
+        player.DeactivateRpc();
+        NetworkObject body = Instantiate(deadBody);
+        body.transform.position = player.gameObject.transform.position;
+        Vector3 pos = body.transform.position;
+        body.transform.position = new Vector3(pos.x, pos.y - 0.7f, pos.z);
+        body.Spawn();
+        yield return new WaitForSeconds(3f);
         GunshotRpc();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         UnDimScreenRpc();
+        yield return new WaitForSeconds(2f);
+        SpoonsPlayer.StartRound();
     }
 
     private void PlayAudio(AudioClip clip)
@@ -41,21 +51,21 @@ public class PlayerKiller : NetworkBehaviour
     }
 
 
-    [Rpc(SendTo.NotServer)]
+    [Rpc(SendTo.Everyone)]
     private void DimScreenRpc()
     {
         screenCover.gameObject.SetActive(true);
         PlayAudio(lightSwitch);
     }
 
-    [Rpc(SendTo.NotServer)]
+    [Rpc(SendTo.Everyone)]
     private void UnDimScreenRpc()
     {
         screenCover.gameObject.SetActive(false);
         PlayAudio(lightSwitch);
     }
 
-    [Rpc(SendTo.NotServer)]
+    [Rpc(SendTo.Everyone)]
     private void GunshotRpc()
     {
         PlayAudio(gunShot);

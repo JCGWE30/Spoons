@@ -610,7 +610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1489061488
+  GlobalObjectIdHash: 2804158517
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -647,9 +647,9 @@ MonoBehaviour:
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 0
-  SyncRotAngleY: 0
-  SyncRotAngleZ: 0
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -679,7 +679,7 @@ MonoBehaviour:
   livesCount: {fileID: 9075154897241949852}
   deck: {fileID: 2483505733101340894}
   hand: {fileID: 7648598072210360377}
-  playerMarker: {fileID: 8400776178270744792, guid: a85f04b2b8298784486436ae6a0009fe, type: 3}
+  marker: {fileID: 0}
 --- !u!1 &7079393253644515387
 GameObject:
   m_ObjectHideFlags: 0

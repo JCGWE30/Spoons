@@ -62,7 +62,7 @@ public class Deck : MonoBehaviour
                 cards.Add(new Card(suiteIndex, valueIndex));
             }
         }
-        cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
+        //cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
     }
 
     public Card TakeCard()

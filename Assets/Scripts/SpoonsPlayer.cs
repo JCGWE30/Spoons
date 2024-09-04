@@ -16,6 +16,7 @@ public class SpoonsPlayer : NetworkBehaviour
 
     [SerializeField] private Deck deck;
     [SerializeField] private Deck hand;
+    [SerializeField] private GameObject marker;
 
     public static SpoonsPlayer localInstance;
     public static bool roundStarted { get; private set; }
@@ -76,6 +77,12 @@ public class SpoonsPlayer : NetworkBehaviour
 
     public static void StartRound()
     {
+        if (playerCount == 1)
+        {
+            localInstance.TopTextRpc(string.Format(Constants.ROUND_WINNER_TEXT, players[0].OwnerClientId));
+            NetworkManager.Singleton.DisconnectClient(0);
+            return;
+        }
         SpoonsPlayer dealer = players[Random.Range(0, players.Count)];
         dealer.deck.ShuffleDeck();
         Debug.Log(dealer.OwnerClientId + "Is the dealer");
@@ -116,7 +123,19 @@ public class SpoonsPlayer : NetworkBehaviour
 
     public static void KillNoLive()
     {
+        foreach(SpoonsPlayer player in players)
+        {
+            if (player.letters == Constants.SPOON_TRIGGER_WORD_LENGTH)
+            {
+                PlayerKiller.instance.KillPlayer(player);
+                return;
+            }
+        }
+    }
 
+    public void RemovePlayer(SpoonsPlayer player)
+    {
+        players.Remove(player);
     }
 
     public static void StartNewRound()
@@ -199,7 +218,19 @@ public class SpoonsPlayer : NetworkBehaviour
             localInstance.TopTextRpc(Constants.ROUND_NO_LIVES);
         }
     }
-
+    [Rpc(SendTo.Everyone)]
+    public void DeactivateRpc()
+    {
+        if (IsOwner)
+        {
+            Camera.main.transform.parent = null;
+            CenterPoint.MoveCameraToDeathPos(Camera.main);
+        }
+        foreach(Transform transform in transform)
+        {
+            transform.gameObject.SetActive(false);
+        }
+    }
     [Rpc(SendTo.Everyone)]
     private void TopTextRpc(FixedString64Bytes text)
     {

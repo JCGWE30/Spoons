@@ -16,7 +16,17 @@ public class PlayerSetup : NetworkBehaviour
         {
             Camera.main.transform.parent = transform;
             Camera.main.transform.localPosition = new Vector3(0, Constants.PLAYER_CAMERA_OFFSET, 0);
-            CenterPoint.RotateCamera(Camera.main);
+        }
+    }
+
+    private void Update()
+    {
+        if (IsOwner)
+        {
+            if (SpoonsPlayer.roundStarted)
+                CenterPoint.RotateCamera(Camera.main);
+            else
+                Camera.main.transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
         }
     }
 }

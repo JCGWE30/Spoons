@@ -2083,6 +2083,7 @@ MonoBehaviour:
   audioSource: {fileID: 125413084}
   lightSwitch: {fileID: 8300000, guid: da78933d9ec716e488d649ca3e690be8, type: 3}
   gunShot: {fileID: 8300000, guid: 51c6e2bd6587024459ae221d9e5f9209, type: 3}
+  deadBody: {fileID: 1216540980381815099, guid: dbca08eb308bdcf4180ccbb501225e49, type: 3}
 --- !u!4 &804081544
 Transform:
   m_ObjectHideFlags: 0
@@ -2867,7 +2868,7 @@ Transform:
   m_GameObject: {fileID: 1027427078}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.905, y: 1.115, z: -2.184}
+  m_LocalPosition: {x: 2.691038, y: 1.115, z: 0.31599998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3476,7 +3477,7 @@ Transform:
   m_GameObject: {fileID: 1651878186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9360379, y: 1.176, z: -2.2}
+  m_LocalPosition: {x: 2.66, y: 1.176, z: 0.3}
   m_LocalScale: {x: 0.19567, y: 0.19567, z: 0.19567}
   m_ConstrainProportionsScale: 0
   m_Children: []

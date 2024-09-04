@@ -10,10 +10,12 @@ public class SpoonsNetworker : MonoBehaviour
     {
         if (ClonesManager.IsClone())
         {
+            Debug.Log("Starting client");
             NetworkManager.Singleton.StartClient();
         }
         else
         {
+            Debug.Log("Starting host");
             NetworkManager.Singleton.StartHost();
         }
     }
