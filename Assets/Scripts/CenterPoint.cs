@@ -41,7 +41,6 @@ public class CenterPoint : MonoBehaviour
         Vector3 pos = instance.gameObject.transform.position;
         pos.y += 10f;
         cam.transform.position = pos;
-        cam.transform.eulerAngles = new Vector3(90, 0, 0);
     }
 
     public static void RotateCamera(Camera camera)

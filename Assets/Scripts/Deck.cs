@@ -50,6 +50,18 @@ public class Deck : MonoBehaviour
 
     }
 
+    public void DebugDeck()
+    {
+        cards.Clear();
+        foreach (var suite in Constants.CARD_SUITES)
+        {
+            foreach (var value in Constants.CARD_VALUES)
+            {
+                cards.Add(new Card(0, 0));
+            }
+        }
+    }
+
     public void ShuffleDeck() {
         cards.Clear();
         foreach (var suite in Constants.CARD_SUITES)
@@ -62,7 +74,7 @@ public class Deck : MonoBehaviour
                 cards.Add(new Card(suiteIndex, valueIndex));
             }
         }
-        //cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
+        cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
     }
 
     public Card TakeCard()

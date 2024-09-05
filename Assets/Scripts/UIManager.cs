@@ -115,6 +115,13 @@ public class UIManager : MonoBehaviour
         lastToggled = Time.time;
     }
 
+    public void HideAll()
+    {
+        mainPanel.gameObject.SetActive(false);
+        viewTimer.gameObject.SetActive(false);
+        takeSpoon.gameObject.SetActive(false);
+    }
+
     private void TakeSpoon()
     {
         if (viewingSpoons != true)
@@ -150,6 +157,8 @@ public class UIManager : MonoBehaviour
         }
 
         if (!SpoonsPlayer.roundStarted)
+            return;
+        if (SpoonsPlayer.localInstance.hasSpoon)
             return;
         if (viewingSpoons)
         {

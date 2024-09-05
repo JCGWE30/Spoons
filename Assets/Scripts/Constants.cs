@@ -9,7 +9,7 @@ public class Constants
 
     //Center Point
     public static readonly float CENTER_GROUND_POSITION = 2f;
-    public static readonly float CENTER_CIRCLE_RADIUS = 2.5f;
+    public static readonly float CENTER_CIRCLE_RADIUS = 5f;
 
     //Player Info
     public static readonly float PLAYER_CAMERA_OFFSET = 0.8f;

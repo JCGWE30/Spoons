@@ -32,9 +32,13 @@ public class SpoonsPlayer : NetworkBehaviour
 
     public static RoundEndHandler onRoundEnd;
 
-    private bool hasSpoon;
+    public bool hasSpoon;
 
     private int letters;
+
+    private bool canTakeSpoons = false;
+
+    public bool alive = true;
 
 
     void Start()
@@ -62,11 +66,16 @@ public class SpoonsPlayer : NetworkBehaviour
         {
             foreach (var item in FindObjectsOfType<SpoonsPlayer>())
             {
-                Vector3 directionToTarget = gameObject.transform.position - item.nameTag.transform.position;
+                if (!item.alive)
+                {
+                    item.nameTag.gameObject.SetActive(false);
+                    item.livesCount.gameObject.SetActive(false);
+                    item.dealerTag.gameObject.SetActive(false);
+                    return;
+                }
+                Vector3 directionToTarget = Camera.main.transform.position - item.nameTag.transform.position;
 
                 directionToTarget = Quaternion.Euler(0, 180f, 0) * directionToTarget;
-
-                directionToTarget.y = 0;
 
                 item.nameTag.transform.forward = directionToTarget;
                 item.livesCount.transform.forward = directionToTarget;
@@ -84,13 +93,15 @@ public class SpoonsPlayer : NetworkBehaviour
             return;
         }
         SpoonsPlayer dealer = players[Random.Range(0, players.Count)];
-        dealer.deck.ShuffleDeck();
+        dealer.deck.DebugDeck();
         Debug.Log(dealer.OwnerClientId + "Is the dealer");
         localInstance.TopTextRpc(string.Format(Constants.ROUND_START_TEXT,dealer.OwnerClientId));
         dealer.SetDealerRpc(dealer.OwnerClientId);
+        localInstance.canTakeSpoons = false;
 
         foreach (SpoonsPlayer player in players)
         {
+            player.hasSpoon = false;
             for (int i = 0; i < 4; i++)
             {
                 Card card = dealer.deck.TakeCard();
@@ -202,10 +213,9 @@ public class SpoonsPlayer : NetworkBehaviour
 
     public void GiveLetter(SpoonsPlayer player, bool preMature)
     {
-        if (preMature)
-            localInstance.TopTextRpc(Constants.ROUND_SPOON_EARLY_TEXT);
-        else
-            localInstance.TopTextRpc(Constants.ROUND_SPOON_LATE_TEXT);
+        string text = preMature ? Constants.ROUND_SPOON_EARLY_TEXT : Constants.ROUND_SPOON_LATE_TEXT;
+
+        localInstance.TopTextRpc(string.Format(text,player.OwnerClientId+""));
 
         player.letters += 1;
 
@@ -223,8 +233,12 @@ public class SpoonsPlayer : NetworkBehaviour
     {
         if (IsOwner)
         {
+            alive = false;
+            Debug.ClearDeveloperConsole();
             Camera.main.transform.parent = null;
             CenterPoint.MoveCameraToDeathPos(Camera.main);
+            Debug.Log("Camera was moved");
+            SetTextPositions();
         }
         foreach(Transform transform in transform)
         {
@@ -271,7 +285,9 @@ public class SpoonsPlayer : NetworkBehaviour
                 player.livesCount.text = Constants.SPOONS_TRIGGER_WORD.Substring(0, player.letters);
         }
         roundStarted = true;
-        onRoundStart?.Invoke(count);
+
+        if(alive)
+            onRoundStart?.Invoke(count);
     }
     [Rpc(SendTo.Everyone)]
     private void EndRoundRpc()
@@ -311,29 +327,29 @@ public class SpoonsPlayer : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void TakeSpoonRpc()
     {
+        if (hasSpoon)
+            return;
         if (!roundStarted)
             return;
         bool match = true;
-        Card lastcard = null;
+        int matchValue = hand.GetCards()[0].value;
         foreach(Card card in hand.GetCards())
         {
-            if (lastcard == null)
-            {
-                lastcard = card;
-                continue;
-            }
-            if (lastcard.value != card.value)
+            if (card.value != matchValue)
             {
                 match = false;
                 break;
             }
-            lastcard = card;
         }
-        if (match)
+        if (match||canTakeSpoons)
         {
             hasSpoon = true;
             if (!Spoon.TakeSpoon())
+            {
+                DeductSpoonRpc();
+                canTakeSpoons = true;
                 return;
+            }
             EndRound();
             foreach (SpoonsPlayer player in players)
             {
@@ -355,6 +371,10 @@ public class SpoonsPlayer : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void DeductSpoonRpc()
     {
+        if (IsOwner)
+        {
+            UIManager.instance.HideAll();
+        }
         if (IsHost)
             return;
         Spoon.TakeSpoon();
