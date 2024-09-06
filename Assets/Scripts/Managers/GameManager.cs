@@ -31,6 +31,10 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         instance = this;
+        if (!IsServer)
+            return;
+        Player serverPlayer = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<Player>();
+        PlayerJoin(serverPlayer);
     }
 
     public static void PlayerJoin(Player player)
@@ -107,7 +111,6 @@ public class GameManager : NetworkBehaviour
         if (loser.letters >= Constants.SPOON_TRIGGER_WORD_LENGTH)
         {
             texts.Add(Constants.ROUND_NO_LIVES);
-            playersInRound.Remove(loser.OwnerClientId);
         }
 
         TopTextEndHandler endEvent = () =>

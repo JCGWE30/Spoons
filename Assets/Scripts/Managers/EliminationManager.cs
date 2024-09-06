@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EliminationManager : MonoBehaviour
+public class EliminationManager : NetworkBehaviour
 {
     [SerializeField] private Image screenCover;
     [SerializeField] private AudioSource audioSource;

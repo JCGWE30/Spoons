@@ -27,7 +27,6 @@ public class SpoonsNetworker : MonoBehaviour
     private void SetupServerEvents()
     {
         manager.OnClientConnectedCallback += HandleConnection;
-        HandleConnection(manager.LocalClientId);
     }
 
     private void HandleConnection(ulong id)
