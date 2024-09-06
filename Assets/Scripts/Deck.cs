@@ -39,6 +39,12 @@ public class Card
         string name = Constants.CARD_VALUES[value] + " of " + Constants.CARD_SUITES[suite];
         return name;
     }
+
+    public Sprite GetSprite()
+    {
+        string search = Constants.CARD_VALUES[value].ToLower() + "_of_" + Constants.CARD_SUITES[suite].ToLower();
+        return CardSpriteManager.instance.GetCard(search);
+    }
 }
 
 public class Deck : MonoBehaviour
@@ -81,6 +87,12 @@ public class Deck : MonoBehaviour
     {
         Card card = cards[0];
         cards.RemoveAt(0);
+        return card;
+    }
+
+    public Card NextCard()
+    {
+        Card card = cards[0];
         return card;
     }
 

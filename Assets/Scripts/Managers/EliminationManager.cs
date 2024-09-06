@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class PlayerKiller : NetworkBehaviour
+public class EliminationManager : MonoBehaviour
 {
     [SerializeField] private Image screenCover;
     [SerializeField] private AudioSource audioSource;
@@ -13,35 +12,28 @@ public class PlayerKiller : NetworkBehaviour
     [SerializeField] private AudioClip gunShot;
     [SerializeField] private NetworkObject deadBody;
 
-    public static PlayerKiller instance;
-    // Start is called before the first frame update
+    public static EliminationManager instance;
     void Start()
     {
         instance = this;
     }
 
-    public void KillPlayer(SpoonsPlayer player)
+    public void KillPlayer(Player player)
     {
         StartCoroutine(KillSequence(player));
     }
 
-    private IEnumerator KillSequence(SpoonsPlayer player)
+    private IEnumerator KillSequence(Player player)
     {
         yield return new WaitForSeconds(3f);
         DimScreenRpc();
-        SpoonsPlayer.localInstance.RemovePlayer(player);
-        player.DeactivateRpc();
-        NetworkObject body = Instantiate(deadBody);
-        body.transform.position = player.gameObject.transform.position;
-        Vector3 pos = body.transform.position;
-        body.transform.position = new Vector3(pos.x, pos.y - 0.7f, pos.z);
-        body.Spawn();
+        GameManager.EliminatePlayer(player.OwnerClientId);
         yield return new WaitForSeconds(3f);
         GunshotRpc();
         yield return new WaitForSeconds(3f);
         UnDimScreenRpc();
         yield return new WaitForSeconds(2f);
-        SpoonsPlayer.StartRound();
+        GameManager.StartRound();
     }
 
     private void PlayAudio(AudioClip clip)

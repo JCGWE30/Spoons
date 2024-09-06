@@ -5,7 +5,11 @@ using System.Collections.Generic;
 public class Constants
 {
     //Debug
-    public static readonly int DEBUG_EXPECTED_PLAYER_SIZE = 3;
+    public static readonly int DEBUG_EXPECTED_PLAYER_SIZE = 2;
+    public static readonly List<string> DEBUG_NAMES = new List<string> { "Cosmo", "Wanda", "Moop", "Mee6" };
+
+    //Networking
+    public static readonly string NETWORK_DISCONNECT_MESSAGE = "Sorry this lobby is full";
 
     //Center Point
     public static readonly float CENTER_GROUND_POSITION = 2f;
@@ -22,7 +26,7 @@ public class Constants
     //Spoons info
     public static readonly string SPOONS_DEALER_NAME = "DEALER";
     public static readonly string SPOONS_TRIGGER_WORD = "SPOON";
-    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 1;
+    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 2;
     public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 5f;
     public static readonly float SPOONS_VIEW_TIMER = 3f;
 
