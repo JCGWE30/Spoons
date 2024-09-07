@@ -36,8 +36,8 @@ public class GameManager : NetworkBehaviour
             onRoundEnd = null;
             onGameStart = null;
             onGameEnd = null;
-            NetworkManager.Singleton.Shutdown();
             SceneManager.LoadScene("MainMenu");
+            NetworkManager.Singleton.Shutdown();
         };
         if (!IsServer)
             return;
@@ -73,6 +73,23 @@ public class GameManager : NetworkBehaviour
     {
         GetPlayer(id).Kill();
         instance.playersInRound.Remove(id);
+    }
+    public static void DisconnectPlayer(ulong id)
+    {
+        instance.HandleDisconnect(id);
+    }
+    private void HandleDisconnect(ulong id)
+    {
+        playersInRound.Remove(id);
+        PositionManager.LookAtMiddle();
+        EndRoundRpc();
+        TopTextEndHandler fullEnd = () =>
+        {
+            StartRound();
+        };
+        UIManager.SendTopText(Constants.ROUND_END_TEXT, Constants.PLAYER_TOPTEXT_TIME, null);
+        UIManager.SendTopText(Constants.ROUND_DISCONNECT_PLAYER, Constants.PLAYER_TOPTEXT_TIME, fullEnd);
+
     }
     public void HandleJoin(Player player)
     {
@@ -195,6 +212,12 @@ public class GameManager : NetworkBehaviour
                 return;
             }
         }
+    }
+    [Rpc(SendTo.Everyone)]
+    private void EndRoundRpc()
+    {
+        roundStarted = false;
+        onRoundEnd?.Invoke(null);
     }
     [Rpc(SendTo.Everyone)]
     private void EndGameRpc()

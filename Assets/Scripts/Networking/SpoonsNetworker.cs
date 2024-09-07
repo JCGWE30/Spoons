@@ -6,6 +6,7 @@ using Unity.Networking.Transport.Relay;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpoonsNetworker : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class SpoonsNetworker : MonoBehaviour
 
             Debug.Log("Starting client");
             NetworkManager.Singleton.StartClient();
+            manager.OnClientDisconnectCallback += HandleServerStop;
         }
     }
 
@@ -35,6 +37,7 @@ public class SpoonsNetworker : MonoBehaviour
     private void SetupServerEvents()
     {
         manager.OnClientConnectedCallback += HandleConnection;
+        manager.OnClientDisconnectCallback += HandleDisconnection;
     }
 
     private void HandleConnection(ulong id)
@@ -48,6 +51,18 @@ public class SpoonsNetworker : MonoBehaviour
             Player p = manager.ConnectedClients[id].PlayerObject.GetComponent<Player>();
             GameManager.PlayerJoin(p);
         }
+    }
+
+    private void HandleDisconnection(ulong id)
+    {
+        Debug.Log("Player disconnected " + id);
+        GameManager.DisconnectPlayer(id);
+    }
+
+    private void HandleServerStop(ulong id)
+    {
+        Debug.Log("Client cut");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public static BaseRpcTarget TargetUid(ulong id,NetworkBehaviour behv)
