@@ -34,6 +34,7 @@ public class Constants
     public static readonly string ROUND_LIVES_LEFT = "They have {0} letters spelling {1}";
     public static readonly string ROUND_NO_LIVES = "They will be taken out back shortly";
     public static readonly string ROUND_WINNER_TEXT = "Congrats {0}, you win!";
+    public static readonly string ROUND_DISCONNECT_PLAYER = "Someone left. Starting a new round";
 
     //Lobby Defaults
     public static readonly int LOBBY_MAX_PLAYERS = 4;
