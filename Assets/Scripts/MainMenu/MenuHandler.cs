@@ -14,6 +14,7 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] private Button hostButton;
     [SerializeField] private Button quickJoinButton;
     [SerializeField] private Button rulesButton;
+    [SerializeField] private Button settingsButton;
 
     [SerializeField] private Button codeJoinButton;
     [SerializeField] private TMP_InputField codeJoinInput;
@@ -33,6 +34,7 @@ public class MenuHandler : MonoBehaviour
         quickJoinButton.onClick.AddListener(delegate { QuickJoin(); });
         codeJoinButton.onClick.AddListener(delegate { JoinWithCode(); });
         rulesButton.onClick.AddListener(GoRules);
+        settingsButton.onClick.AddListener(GoSettings);
 
         LobbyHandler.onEnterLobby += EnterLobby;
         LobbyHandler.onExitLobby += ExitLobby;
@@ -87,7 +89,13 @@ public class MenuHandler : MonoBehaviour
         RulesHandler.EnterRules();
     }
 
-    public static void FromRules()
+    private void GoSettings()
+    {
+        instance.mainPanel.gameObject.SetActive(false);
+        SettingsHandler.EnterSettings();
+    }
+
+    public static void BackToMenu()
     {
         instance.mainPanel.gameObject.SetActive(true);
     }

@@ -24,7 +24,7 @@ public class RulesHandler : MonoBehaviour
 
     private void Back()
     {
-        MenuHandler.FromRules();
+        MenuHandler.BackToMenu();
         instance.rulesPanel.gameObject.SetActive(false);
     }
 }

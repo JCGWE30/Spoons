@@ -20,6 +20,7 @@ public class EliminationManager : NetworkBehaviour
 
     public void KillPlayer(Player player)
     {
+        audioSource.volume = SettingsHandler.volume / 100f;
         StartCoroutine(KillSequence(player));
     }
 
