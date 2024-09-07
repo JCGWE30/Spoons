@@ -1,0 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using Unity.Services.Lobbies.Models;
+using UnityEngine;
+using UnityEngine.UI;
+using static MenuObjectHolder;
+
+public class LobbyMenyManager : MonoBehaviour
+{
+    private void Start()
+    {
+        LobbyHandler.onUpdate += UpdateLobby;
+        startGame.onClick.AddListener(delegate { StartGame(); });
+        leaveLobby.onClick.AddListener(delegate { LeaveLobby(); });
+    }
+
+    private void UpdateLobby(Lobby lobby)
+    {
+        foreach (Transform item in playerPanel.gameObject.transform)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach (var player in lobby.Players)
+        {
+            TMP_Text playerName = Instantiate(playerPrefab);
+            playerName.text = player.Data[Constants.KEY_PLAYER_NAME].Value;
+            playerName.transform.parent = playerPanel.transform;
+        }
+        lobbyName.text = lobby.Name;
+        lobbyCode.text = "Code: " + lobby.LobbyCode;
+    }
+
+    private void StartGame()
+    {
+        LobbyHandler.StartGame();
+    }
+
+    private void LeaveLobby()
+    {
+        LobbyHandler.LeaveLobby();
+    }
+}

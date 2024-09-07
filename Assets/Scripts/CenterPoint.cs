@@ -12,7 +12,6 @@ public class CenterPoint : MonoBehaviour
     {
         instance = this;
         Destroy(gameObject.GetComponent<MeshRenderer>());
-        GeneratePoints(Constants.DEBUG_EXPECTED_PLAYER_SIZE);
     }
 
     public static void GeneratePoints(int count)
