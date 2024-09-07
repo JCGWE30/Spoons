@@ -5,14 +5,26 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static MenuObjectHolder;
 
 public class MenuHandler : MonoBehaviour
 {
+    [SerializeField] private Image lobbyPanel;
+    [SerializeField] private TMP_Text outputMessage;
+    [SerializeField] private Image mainPanel;
+    [SerializeField] private Button hostButton;
+    [SerializeField] private Button quickJoinButton;
+    [SerializeField] private Button rulesButton;
+
+    [SerializeField] private Button codeJoinButton;
+    [SerializeField] private TMP_InputField codeJoinInput;
+    [SerializeField] private TMP_InputField setNameInput;
+
     private string playerName;
+    private static MenuHandler instance;
 
     void Start()
     {
+        instance = this;
         Debug.Log(lobbyPanel+" Is the panel");
         lobbyPanel.gameObject.SetActive(false);
         mainPanel.gameObject.SetActive(true);
@@ -20,6 +32,7 @@ public class MenuHandler : MonoBehaviour
         hostButton.onClick.AddListener(delegate { StartLobby(); });
         quickJoinButton.onClick.AddListener(delegate { QuickJoin(); });
         codeJoinButton.onClick.AddListener(delegate { JoinWithCode(); });
+        rulesButton.onClick.AddListener(GoRules);
 
         LobbyHandler.onEnterLobby += EnterLobby;
         LobbyHandler.onExitLobby += ExitLobby;
@@ -66,6 +79,17 @@ public class MenuHandler : MonoBehaviour
 
         if (!await LobbyHandler.JoinLobby(code,playerName))
             OutputText(Constants.TEXTS_NOLOBBY, false);
+    }
+
+    private void GoRules()
+    {
+        instance.mainPanel.gameObject.SetActive(false);
+        RulesHandler.EnterRules();
+    }
+
+    public static void FromRules()
+    {
+        instance.mainPanel.gameObject.SetActive(true);
     }
 
     private void EnterLobby(Lobby lobby)
