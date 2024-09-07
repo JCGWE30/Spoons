@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
     public delegate void GameStartHandler();
-    public delegate void GameEndHandler(Player winer);
+    public delegate void GameEndHandler();
 
     public delegate void RoundStartHandler(List<Player> players);
     public delegate void RoundEndHandler(Player loser);
@@ -18,8 +19,6 @@ public class GameManager : NetworkBehaviour
 
     public static GameStartHandler onGameStart;
     public static GameEndHandler onGameEnd;
-
-
 
     private static GameManager instance;
     private List<Player> playerList { get { return playersInRound.Values.ToList(); } }
@@ -31,6 +30,12 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         instance = this;
+        onGameEnd += () =>
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.UnloadSceneAsync("Spoons");
+            SceneManager.LoadScene("MainMenu");
+        };
         if (!IsServer)
             return;
         Player serverPlayer = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<Player>();
@@ -71,7 +76,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Player Join");
         playersInRound[player.OwnerClientId] = player;
 
-        if (playersInRound.Count == Constants.DEBUG_EXPECTED_PLAYER_SIZE)
+        if (playersInRound.Count == RelayManager.lobbySize)
             StartRound();
     }
 
@@ -79,7 +84,11 @@ public class GameManager : NetworkBehaviour
     {
         if (instance.playerList.Count == 1)
         {
-            UIManager.SendTopText(new[] { "Congrats on winning!" }, Constants.PLAYER_TOPTEXT_TIME, null);
+            TopTextEndHandler gameEndEvent = () =>
+            {
+                instance.EndGameRpc();
+            };
+            UIManager.SendTopText(new[] { string.Format(Constants.ROUND_WINNER_TEXT, instance.playerList[0].displayName) }, Constants.PLAYER_TOPTEXT_TIME, gameEndEvent);
             return;
         }
         PositionManager.ArrangePlayers(instance.playerList);
@@ -176,5 +185,10 @@ public class GameManager : NetworkBehaviour
                 return;
             }
         }
+    }
+    [Rpc(SendTo.Everyone)]
+    private void EndGameRpc()
+    {
+        onGameEnd?.Invoke();
     }
 }

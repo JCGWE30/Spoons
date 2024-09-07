@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class Constants
 {
     //Debug
-    public static readonly int DEBUG_EXPECTED_PLAYER_SIZE = 2;
     public static readonly List<string> DEBUG_NAMES = new List<string> { "Cosmo", "Wanda", "Moop", "Mee6" };
 
     //Networking
@@ -26,7 +25,7 @@ public class Constants
     //Spoons info
     public static readonly string SPOONS_DEALER_NAME = "DEALER";
     public static readonly string SPOONS_TRIGGER_WORD = "SPOON";
-    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 2;
+    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 1;
     public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 5f;
     public static readonly float SPOONS_VIEW_TIMER = 3f;
 
@@ -38,4 +37,19 @@ public class Constants
     public static readonly string ROUND_LIVES_LEFT = "They have {0} letters spelling {1}";
     public static readonly string ROUND_NO_LIVES = "They will be taken out back shortly";
     public static readonly string ROUND_WINNER_TEXT = "Congrats {0}, you win!";
+
+    //Lobby Defaults
+    public static readonly int LOBBY_MAX_PLAYERS = 4;
+    public static readonly int LOBBY_MIN_PLAYERS = 2;
+    public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 30f;
+    public static readonly float LOBBY_UPDATE_COOLDOWN = 1f;
+
+    //Lobby Texts
+    public static readonly string TEXTS_NONAME = "Failed to join lobby: No name set";
+    public static readonly string TEXTS_NOLOBBY = "Failed to join lobby: No lobby found";
+    public static readonly string TEXTS_NOCODE = "Failed to join lobby: No code entered";
+
+    //Networking Keys
+    public static readonly string KEY_PLAYER_NAME = "PlayerName";
+    public static readonly string KEY_RELAY_CODE = "RelayCode";
 }
