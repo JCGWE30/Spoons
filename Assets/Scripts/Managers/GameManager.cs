@@ -32,8 +32,11 @@ public class GameManager : NetworkBehaviour
         instance = this;
         onGameEnd += () =>
         {
+            onRoundStart = null;
+            onRoundEnd = null;
+            onGameStart = null;
+            onGameEnd = null;
             NetworkManager.Singleton.Shutdown();
-            SceneManager.UnloadSceneAsync("Spoons");
             SceneManager.LoadScene("MainMenu");
         };
         if (!IsServer)
@@ -88,14 +91,17 @@ public class GameManager : NetworkBehaviour
             {
                 instance.EndGameRpc();
             };
+            PositionManager.LookAtPlayer(instance.playerList[0]);
             UIManager.SendTopText(new[] { string.Format(Constants.ROUND_WINNER_TEXT, instance.playerList[0].displayName) }, Constants.PLAYER_TOPTEXT_TIME, gameEndEvent);
             return;
         }
         PositionManager.ArrangePlayers(instance.playerList);
         Player dealer = DeckManager.SetupDecks(instance.playerList);
+        PositionManager.LookAtPlayer(dealer);
         string startText = string.Format(Constants.ROUND_START_TEXT, dealer.displayName);
         TopTextEndHandler endEvent = () =>
         {
+            PositionManager.LookAtSpoons();
             roundStarted = true;
             instance.StartRoundRpc(instance.playersInRound.Keys.ToArray());
         };
@@ -105,13 +111,13 @@ public class GameManager : NetworkBehaviour
 
     public void EndRound(Player loser,bool preMature)
     {
+        PositionManager.LookAtMiddle();
         EndRoundRpc(loser.OwnerClientId);
         List<string> texts = new List<string>();
-        texts.Add(Constants.ROUND_END_TEXT);
         loser.letters++;
 
         if (preMature)
-            texts.Add(string.Format(Constants.ROUND_SPOON_EARLY_TEXT,loser.displayName));
+            texts.Add(string.Format(Constants.ROUND_SPOON_EARLY_TEXT, loser.displayName));
         else
             texts.Add(string.Format(Constants.ROUND_SPOON_LATE_TEXT, loser.displayName));
 
@@ -121,6 +127,10 @@ public class GameManager : NetworkBehaviour
         {
             texts.Add(Constants.ROUND_NO_LIVES);
         }
+        TopTextEndHandler firstEnd = () => 
+        {
+            PositionManager.LookAtPlayer(loser);
+        };
 
         TopTextEndHandler endEvent = () =>
         {
@@ -129,7 +139,7 @@ public class GameManager : NetworkBehaviour
             else
                 StartRound();
         };
-
+        UIManager.SendTopText(Constants.ROUND_END_TEXT, Constants.PLAYER_TOPTEXT_TIME, firstEnd);
         UIManager.SendTopText(texts.ToArray(), Constants.PLAYER_TOPTEXT_TIME, endEvent);
     }
     [Rpc(SendTo.Server)]

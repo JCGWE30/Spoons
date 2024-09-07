@@ -8,7 +8,6 @@ using static Constants;
 using Unity.Mathematics;
 using System;
 using System.Threading.Tasks;
-using static UnityEditor.Progress;
 using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
 
@@ -40,10 +39,10 @@ public class LobbyHandler : MonoBehaviour
     }
 
     #region lobbyHeartbeat
-    private void Update()
+    private async void Update()
     {
         HandleHeartbeat();
-        HandleFetchHeartbeat();
+        await HandleFetchHeartbeat();
     }
     private async void HandleHeartbeat()
     {
@@ -64,11 +63,11 @@ public class LobbyHandler : MonoBehaviour
         {
             fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
             lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
+            onUpdate?.Invoke(lobby);
             if (lobby.Data[KEY_RELAY_CODE].Value != "0")
             {
                 JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
             }
-            onUpdate?.Invoke(lobby);
         }
     }
     #endregion
@@ -96,7 +95,6 @@ public class LobbyHandler : MonoBehaviour
         if (isStarting)
             return;
         isStarting = true;
-        await HandleFetchHeartbeat();
         string code = await RelayManager.CreateGame(lobby.Players.Count, localName);
         Debug.Log("Starting game with relay code " + code+ " "+KEY_RELAY_CODE);
         await LobbyService.Instance.UpdateLobbyAsync(lobby.Id, new UpdateLobbyOptions()
@@ -175,7 +173,6 @@ public class LobbyHandler : MonoBehaviour
     {
         if(!isHost)
             await RelayManager.JoinRelay(relayCode, localName);
-        SceneManager.UnloadSceneAsync("MainMenu");
         SceneManager.LoadScene("Spoons");
     }
 }

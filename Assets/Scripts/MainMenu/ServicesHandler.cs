@@ -1,4 +1,4 @@
-using ParrelSync;
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
@@ -19,8 +19,8 @@ public class ServicesHandler : MonoBehaviour
         var options = new InitializationOptions();
         options.SetProfile("Normal");
 #if UNITY_EDITOR
-        if (ClonesManager.IsClone())
-            options.SetProfile(ClonesManager.GetArgument());
+        if (ParrelSync.ClonesManager.IsClone())
+            options.SetProfile(ParrelSync.ClonesManager.GetArgument());
 #endif
         await UnityServices.InitializeAsync(options);
         AuthenticationService.Instance.SignedIn += () =>

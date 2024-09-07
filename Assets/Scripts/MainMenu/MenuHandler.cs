@@ -3,32 +3,17 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static MenuObjectHolder;
 
 public class MenuHandler : MonoBehaviour
 {
-    [SerializeField] private Image lobbyPanel;
-    [SerializeField] private TMP_Text outputMessage;
-    [SerializeField] private Image mainPanel;
-    [SerializeField] private Button hostButton;
-    [SerializeField] private Button quickJoinButton;
-
-    [SerializeField] private Button codeJoinButton;
-    [SerializeField] private TMP_InputField codeJoinInput;
-    [SerializeField] private TMP_InputField setNameInput;
-
     private string playerName;
 
     void Start()
     {
-        DontDestroyOnLoad(lobbyPanel);
-        DontDestroyOnLoad(outputMessage);
-        DontDestroyOnLoad(mainPanel);
-        DontDestroyOnLoad(hostButton);
-        DontDestroyOnLoad(quickJoinButton);
-        DontDestroyOnLoad(codeJoinInput);
-        DontDestroyOnLoad(setNameInput);
-
+        Debug.Log(lobbyPanel+" Is the panel");
         lobbyPanel.gameObject.SetActive(false);
         mainPanel.gameObject.SetActive(true);
 

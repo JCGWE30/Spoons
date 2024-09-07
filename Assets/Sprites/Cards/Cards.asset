@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cards:
   - {fileID: 21300000, guid: f27b1606b94fd9b418e142bcbd4587f5, type: 3}
-  - {fileID: 21300000, guid: f27b1606b94fd9b418e142bcbd4587f5, type: 3}
   - {fileID: 21300000, guid: 15c15f38252f8484d920152277fa4550, type: 3}
   - {fileID: 21300000, guid: 4703430709b50864d82cd9eafad4fc7a, type: 3}
   - {fileID: 21300000, guid: b43b6b9d3cf5bcb4cb07d7e3efca8d9c, type: 3}
@@ -44,6 +43,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 09bf3f7d8da862c4ba248c8312a6b033, type: 3}
   - {fileID: 21300000, guid: d1a4918aedc788f48bff4e1634d6bc0a, type: 3}
   - {fileID: 21300000, guid: 91e3fdb7fbca592419cdf0added08a3a, type: 3}
+  - {fileID: 21300000, guid: d69f00807a6eb2e4cbc18a4b892b39f8, type: 3}
   - {fileID: 21300000, guid: e1f193e094e9acc439ecd472fd94d67e, type: 3}
   - {fileID: 21300000, guid: e6ac46d426eb70d438e00e9cf7f9e7ef, type: 3}
   - {fileID: 21300000, guid: 31b5d8ade7a9c764a9cda5095da1f55d, type: 3}

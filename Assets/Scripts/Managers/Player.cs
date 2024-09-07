@@ -1,19 +1,29 @@
-using ParrelSync;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
 public class Player : NetworkBehaviour
 {
+    [SerializeField] private TMP_Text dealerText;
+    [SerializeField] private TMP_Text livesText;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private GameObject marker;
+    [SerializeField] private GameObject deadMarker;
+
     public Deck deck;
-    public List<Card> hand = new List<Card>();
+    public Card[] hand = new Card[4];
     public NetworkVariable<FixedString128Bytes> _name = new NetworkVariable<FixedString128Bytes>("");
     public string displayName { get { return _name.Value.ToString(); } }
 
-    public int letters;
+    private NetworkVariable<int> _letters = new NetworkVariable<int>(0);
+    public int letters { get { return _letters.Value; } set { _letters.Value = value; } }
     public bool dealer;
     public bool isSafe;
     private bool isDead = false;
@@ -28,6 +38,13 @@ public class Player : NetworkBehaviour
 
     private void Start()
     {
+        deadMarker.SetActive(false);
+        GameManager.onGameEnd += () =>
+        {
+            onSyncCards = null;
+            onSyncDealer = null;
+            onIsSafe = null;
+        };
         if (IsOwner)
         {
             Camera.main.transform.parent = transform;
@@ -35,10 +52,42 @@ public class Player : NetworkBehaviour
             localPlayer = this;
         }
     }
+
+    private void Update()
+    {
+        if (IsOwner)
+        {
+            Camera.main.transform.LookAt(PositionManager.starePosition);
+        }
+        else
+        {
+            dealerText.transform.LookAt(localPlayer.transform);
+
+            nameText.transform.LookAt(localPlayer.transform);
+
+            livesText.transform.LookAt(localPlayer.transform);
+            if (isDead)
+            {
+                marker.SetActive(false);
+                deadMarker.SetActive(true);
+                dealerText.text = "";
+                nameText.text = "";
+                livesText.text = "";
+                return;
+            }
+            dealerText.text = dealer ? Constants.SPOONS_DEALER_NAME : "";
+            nameText.text = displayName;
+            livesText.text = Constants.SPOONS_TRIGGER_WORD.Substring(0, letters);
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
-            _name.Value = Constants.DEBUG_NAMES[Random.Range(0, Constants.DEBUG_NAMES.Count)];
+        if (IsOwner)
+        {
+            Debug.Log("My name is " + RelayManager.localName);
+            SetNameRpc(RelayManager.localName);
+        }
     }
     public void SyncDecks()
     {
@@ -55,12 +104,11 @@ public class Player : NetworkBehaviour
         SyncDeckRpc(deckCards.ToArray(), handCards.ToArray());
     }
 
-    public void SetDealer()
+    public void SetDealer(List<Player> players)
     {
-        foreach(Player player in FindObjectsOfType<Player>())
+        foreach(Player p in players)
         {
-            player.dealer = IsOwner;
-            SyncDealerRpc(player.dealer);
+            p.SyncDealerRpc(OwnerClientId);
         }
     }
 
@@ -68,27 +116,32 @@ public class Player : NetworkBehaviour
     {
         isDead = true;
         transform.Find("Marker").transform.forward = new Vector3(90, 0, 0);
+        KillRpc();
     }
 
+    [Rpc(SendTo.Everyone)]
+    private void KillRpc()
+    {
+        isDead = true;
+    }
     [Rpc(SendTo.Owner)]
     private void SyncDeckRpc(SerializableCard[] deckCards, SerializableCard[] handCards)
     {
         deck.Wipe();
-        hand.Clear();
         foreach (var card in deckCards)
         {
             deck.AddCard(new Card(card));
         }
-        foreach (var card in handCards)
+        for(int i=0;i<4;i++)
         {
-            hand.Add(new Card(card));
+            hand[i] = new Card(handCards[i]);
         }
         onSyncCards?.Invoke();
     }
-    [Rpc(SendTo.Owner)]
-    private void SyncDealerRpc(bool isDealer)
+    [Rpc(SendTo.Everyone)]
+    private void SyncDealerRpc(ulong dealerId)
     {
-        dealer = isDealer;
+        dealer = dealerId == OwnerClientId;
         if(IsOwner)
             onSyncDealer?.Invoke();
     }
@@ -96,5 +149,11 @@ public class Player : NetworkBehaviour
     public void SetSafeRpc()
     {
         onIsSafe?.Invoke();
+    }
+    [Rpc(SendTo.Server)]
+    public void SetNameRpc(string name)
+    {
+        if (displayName == "")
+            _name.Value = name;
     }
 }

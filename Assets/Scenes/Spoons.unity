@@ -2398,11 +2398,11 @@ GameObject:
   - component: {fileID: 897400583}
   - component: {fileID: 897400580}
   - component: {fileID: 897400579}
-  - component: {fileID: 897400578}
   - component: {fileID: 897400577}
   - component: {fileID: 897400576}
   - component: {fileID: 897400582}
   - component: {fileID: 897400584}
+  - component: {fileID: 897400585}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -2432,18 +2432,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7eb48c696679e54408212085eadd324b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &897400578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897400575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8ff09c47dc64354aaeafc488e8bbbb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &897400579
@@ -2536,6 +2524,19 @@ MonoBehaviour:
   lightSwitch: {fileID: 8300000, guid: da78933d9ec716e488d649ca3e690be8, type: 3}
   gunShot: {fileID: 8300000, guid: 51c6e2bd6587024459ae221d9e5f9209, type: 3}
   deadBody: {fileID: 0}
+--- !u!114 &897400585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897400575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ff09c47dc64354aaeafc488e8bbbb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerPoint: {fileID: 1651878186}
 --- !u!1 &903628792
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3504,6 @@ GameObject:
   - component: {fileID: 1651878190}
   - component: {fileID: 1651878189}
   - component: {fileID: 1651878188}
-  - component: {fileID: 1651878187}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -3511,18 +3511,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1651878187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651878186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be8a9c18f56b79f42bbd2bcfd15f30fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!135 &1651878188
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4068,6 +4056,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1998985493}
   m_CullTransparentMesh: 1
+--- !u!1 &2018412895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018412896}
+  m_Layer: 0
+  m_Name: LocalSceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018412896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018412895}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.414777, y: 2.8000002, z: 0.3613453}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2094668943
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,3 +4246,4 @@ SceneRoots:
   - {fileID: 1027427079}
   - {fileID: 125413085}
   - {fileID: 897400581}
+  - {fileID: 2018412896}

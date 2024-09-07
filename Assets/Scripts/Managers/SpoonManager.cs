@@ -13,6 +13,7 @@ public class SpoonManager : MonoBehaviour
 
     void Start()
     {
+        GameManager.onGameEnd += () => spoons.Clear();
         instance = this;
         GameManager.onRoundStart += SetupSpoons;
         GameManager.onRoundEnd += ResetSpoons;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -14,16 +15,16 @@ public class DeckManager : NetworkBehaviour
 
     public static Player SetupDecks(List<Player> players)
     {
-        //Player dealer = players[Random.Range(0, players.Count)];
-        Player dealer = players[1];
-        dealer.SetDealer();
+        players.ForEach((p) => p.deck.Wipe());
+        Player dealer = players[Random.Range(0, players.Count)];
+        dealer.SetDealer(players);
         dealer.deck.ShuffleDeck();
         foreach (var player in players)
         {
             player.isSafe = false;
             for(int i = 0; i < 4; i++)
             {
-                player.hand.Add(dealer.deck.TakeCard());
+                player.hand[i] = dealer.deck.TakeCard();
             }
             player.SyncDecks();
         }
@@ -41,6 +42,15 @@ public class DeckManager : NetworkBehaviour
     }
     public static bool HasSafeCards(Player p)
     {
+        Debug.Log("Scanning " + p.displayName + " for safe cards");
+        int handValue = p.hand[0].value;
+        foreach (var item in p.hand)
+        {
+            Debug.Log("Scanning " + item.GetName() + " for value " + handValue);
+            if (item.value != handValue)
+                return false;
+        }
+        Debug.Log("Cards are safe, taking spoon");
         return true;
     }
     [Rpc(SendTo.Server)]

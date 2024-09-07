@@ -4,17 +4,10 @@ using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
+using static MenuObjectHolder;
 
 public class LobbyMenyManager : MonoBehaviour
 {
-    [SerializeField] private TMP_Text playerPrefab;
-    [SerializeField] private TMP_Text lobbyName;
-    [SerializeField] private TMP_Text lobbyCode;
-    [SerializeField] private Image playerPanel;
-
-    [SerializeField] private Button startGame;
-    [SerializeField] private Button leaveLobby;
-
     private void Start()
     {
         LobbyHandler.onUpdate += UpdateLobby;

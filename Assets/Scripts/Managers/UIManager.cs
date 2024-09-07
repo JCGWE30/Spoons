@@ -40,6 +40,19 @@ public class UIManager : NetworkBehaviour
         instance.activeTopTexts.Add(topText);
     }
 
+    public static void SendTopText(string text, float active, TopTextEndHandler endEvent)
+    {
+        TopText topText = new TopText { texts = new []{text}.ToList(), showDuration = active, endEvent = endEvent };
+
+        if (instance.activeTopTexts.Count == 0)
+        {
+            instance.cycleTime = Time.time;
+            instance.SendTopTextRpc(topText.texts[0]);
+        }
+
+        instance.activeTopTexts.Add(topText);
+    }
+
     public static void TakeCard()
     {
         Card card = Player.localPlayer.deck.NextCard();
@@ -88,8 +101,9 @@ public class UIManager : NetworkBehaviour
             activeText.texts.RemoveAt(0);
             if (activeText.texts.Count == 0)
             {
-                activeText.endEvent?.Invoke();
                 activeTopTexts.Remove(activeText);
+                UpdateTopText();
+                activeText.endEvent?.Invoke();
             }
             UpdateTopText();
         }

@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 public class Constants
 {
-    //Debug
-    public static readonly List<string> DEBUG_NAMES = new List<string> { "Cosmo", "Wanda", "Moop", "Mee6" };
-
     //Networking
     public static readonly string NETWORK_DISCONNECT_MESSAGE = "Sorry this lobby is full";
 
@@ -16,7 +13,7 @@ public class Constants
 
     //Player Info
     public static readonly float PLAYER_CAMERA_OFFSET = 0.8f;
-    public static readonly float PLAYER_TOPTEXT_TIME = 2f;
+    public static readonly float PLAYER_TOPTEXT_TIME = 3.5f;
 
     //Card Info
     public static readonly List<string> CARD_SUITES = new List<string> { "Hearts", "Spades", "Diamonds", "Clubs" };
@@ -25,9 +22,9 @@ public class Constants
     //Spoons info
     public static readonly string SPOONS_DEALER_NAME = "DEALER";
     public static readonly string SPOONS_TRIGGER_WORD = "SPOON";
-    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 1;
-    public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 5f;
-    public static readonly float SPOONS_VIEW_TIMER = 3f;
+    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 5;
+    public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 2f;
+    public static readonly float SPOONS_VIEW_TIMER = 1f;
 
     //Top Texts
     public static readonly string ROUND_START_TEXT = "A new round is starting! {0} is the dealer. Good luck!";
