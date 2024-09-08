@@ -76,7 +76,7 @@ public class LobbyHandler : MonoBehaviour
                 fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
                 lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
                 onUpdate?.Invoke(lobby);
-                if ((lobby.Data[KEY_RELAY_CODE]?.Value ?? "0") != "0")
+                if ((lobby.Data[KEY_RELAY_CODE].Value ?? "0") != "0")
                 {
                     JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
                 }
