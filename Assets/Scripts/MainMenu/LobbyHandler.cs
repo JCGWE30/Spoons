@@ -133,8 +133,12 @@ public class LobbyHandler : MonoBehaviour
         }
         else
         {
-            await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
+            foreach(string lob in await LobbyService.Instance.GetJoinedLobbiesAsync())
+            {
+                await LobbyService.Instance.RemovePlayerAsync(lob,AuthenticationService.Instance.PlayerId);
+            }
         }
+        lobby = null;
         onExitLobby?.Invoke();
     }
     private async Task<bool> HandleJoinLobby(string code,string name)
