@@ -47,28 +47,45 @@ public class LobbyHandler : MonoBehaviour
     }
     private async void HandleHeartbeat()
     {
-        if (lobby == null || !isHost)
-            return;
-        if (Time.time > heartbeatTimer)
+        try
         {
-            heartbeatTimer = LOBBY_HEARTBEAT_COOLDOWN + Time.time;
-            if(!isStarting)
-                await LobbyService.Instance.SendHeartbeatPingAsync(lobby.Id);
+            if (lobby == null || !isHost)
+                return;
+            if (Time.time > heartbeatTimer)
+            {
+                heartbeatTimer = LOBBY_HEARTBEAT_COOLDOWN + Time.time;
+                if (!isStarting)
+                    await LobbyService.Instance.SendHeartbeatPingAsync(lobby.Id);
+            }
+        }
+        catch (LobbyServiceException _)
+        {
+            lobby = null;
+            onExitLobby?.Invoke();
+            return;
         }
     }
     private async Task HandleFetchHeartbeat()
     {
-        if (lobby == null)
-            return;
-        if (Time.time > fetchTimer)
+        try
         {
-            fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
-            lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
-            onUpdate?.Invoke(lobby);
-            if (lobby.Data[KEY_RELAY_CODE].Value != "0")
+            if (lobby == null)
+                return;
+            if (Time.time > fetchTimer)
             {
-                JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
+                fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
+                lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
+                onUpdate?.Invoke(lobby);
+                if ((lobby.Data[KEY_RELAY_CODE]?.Value ?? "0") != "0")
+                {
+                    JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
+                }
             }
+        }catch(LobbyServiceException _)
+        {
+            lobby = null;
+            onExitLobby?.Invoke();
+            return;
         }
     }
     #endregion
@@ -109,11 +126,14 @@ public class LobbyHandler : MonoBehaviour
     }
     private async void HandleLeaveLobby()
     {
-        await LobbyService.Instance.RemovePlayerAsync(lobby.Id,AuthenticationService.Instance.PlayerId);
         if (isHost)
         {
             isHost = false;
             await LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
+        }
+        else
+        {
+            await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
         }
         onExitLobby?.Invoke();
     }
