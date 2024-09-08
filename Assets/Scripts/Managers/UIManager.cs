@@ -26,6 +26,7 @@ public class UIManager : NetworkBehaviour
     {
         instance = this;
         Player.onSyncCards += Sync;
+        GameManager.onRoundEnd += _ => UIHandler.instance.drawingCard = false;
     }
 
     public static void SendTopText(string[] text, float active, TopTextEndHandler endEvent)
