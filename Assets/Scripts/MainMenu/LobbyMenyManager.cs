@@ -16,8 +16,19 @@ public class LobbyMenyManager : MonoBehaviour
     private void Start()
     {
         LobbyHandler.onUpdate += UpdateLobby;
+        LobbyHandler.onEnterLobby += _ => ResetLobby();
         startGame.onClick.AddListener(delegate { StartGame(); });
         leaveLobby.onClick.AddListener(delegate { LeaveLobby(); });
+    }
+
+    private void ResetLobby()
+    {
+        foreach (Transform item in playerPanel.gameObject.transform)
+        {
+            Destroy(item.gameObject);
+        }
+        lobbyName.text = "Loading lobby...";
+        lobbyCode.text = "";
     }
 
     private void UpdateLobby(Lobby lobby)
