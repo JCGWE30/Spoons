@@ -25,11 +25,17 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField] private TMP_Text topText;
 
+    [SerializeField] private Sprite drawBack;
+
+    [SerializeField] private TMP_Text spoonCount;
+
     public static UIHandler instance;
     public string topTextValue;
 
+    public bool drawingCard = false;
     public Sprite drawSprite;
-    public string drawString;
+    public string letters;
+    public bool renderDraw;
     public Sprite[] cardSprites = new Sprite[4];
 
     private bool viewingSpoons = false;
@@ -95,15 +101,15 @@ public class UIHandler : MonoBehaviour
         }
 
 
-        if (drawSprite == null)
+        drawPile.gameObject.SetActive(renderDraw);
+        spoonCount.text = letters;
+        if (!drawingCard)
         {
-            drawPile.image.sprite = null;
-            drawPile.GetComponentInChildren<TMP_Text>().text = drawString;
+            drawPile.image.sprite = drawBack;
         }
         else
         {
             drawPile.image.sprite = drawSprite;
-            drawPile.GetComponentInChildren<TMP_Text>().text = "";
         }
 
         card1.image.sprite = cardSprites[0];

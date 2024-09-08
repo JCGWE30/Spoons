@@ -25,6 +25,7 @@ public class GameManager : NetworkBehaviour
 
     private Dictionary<ulong, Player> playersInRound = new Dictionary<ulong, Player>();
     public static bool roundStarted = false;
+    public static bool endingRound = false;
 
 
     private void Start()
@@ -80,6 +81,8 @@ public class GameManager : NetworkBehaviour
     }
     private void HandleDisconnect(ulong id)
     {
+        if (endingRound)
+            return;
         playersInRound.Remove(id);
         PositionManager.LookAtMiddle();
         EndRoundRpc();
@@ -104,6 +107,7 @@ public class GameManager : NetworkBehaviour
     {
         if (instance.playerList.Count == 1)
         {
+            endingRound = true;
             TopTextEndHandler gameEndEvent = () =>
             {
                 instance.EndGameRpc();

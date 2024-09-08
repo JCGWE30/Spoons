@@ -55,23 +55,26 @@ public class UIManager : NetworkBehaviour
 
     public static void TakeCard()
     {
+        if (UIHandler.instance.drawingCard)
+            return;
+        UIHandler.instance.drawingCard = true;
         Card card = Player.localPlayer.deck.NextCard();
         UIHandler.instance.drawSprite = card.GetSprite();
     }
 
     public static void SwapCard(int card)
     {
-        if (UIHandler.instance.drawSprite == null)
+        if (!UIHandler.instance.drawingCard)
             return;
-        UIHandler.instance.drawSprite = null;
+        UIHandler.instance.drawingCard = false;
         DeckManager.SwapCard(card);
     }
 
     public static void DiscardCard()
     {
-        if (UIHandler.instance.drawSprite == null)
+        if (!UIHandler.instance.drawingCard)
             return;
-        UIHandler.instance.drawSprite = null;
+        UIHandler.instance.drawingCard = false;
         DeckManager.DiscardCard();
     }
 
@@ -86,7 +89,8 @@ public class UIManager : NetworkBehaviour
         UIHandler.instance.cardSprites[1] = Player.localPlayer.hand[1].GetSprite();
         UIHandler.instance.cardSprites[2] = Player.localPlayer.hand[2].GetSprite();
         UIHandler.instance.cardSprites[3] = Player.localPlayer.hand[3].GetSprite();
-        UIHandler.instance.drawString = Player.localPlayer.deck.cardCount + "";
+        UIHandler.instance.renderDraw = Player.localPlayer.deck.cardCount>0;
+        UIHandler.instance.letters = Constants.SPOONS_TRIGGER_WORD.Substring(0, Player.localPlayer.letters);
     }
 
     private void Update()
