@@ -3034,22 +3034,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Object of the Game\r\nPlayers take turns trying to collect a four-of-a-kind.
-    Once someone does, everyone tries to grab a spoon. Without a spoon, you get a
-    letter. If a player spells \u201CS-P-O-O-N\u201D, they\u2019re out! The last
-    player standing wins!\r\n\r\nThe Deal\r\nEach player recieves 4 cards to start
-    the game\n\r\nThe Play\r\nEach player tries to make four of a kind. The dealer
-    takes a card off the top of the deck to have five cards in their hand, removes
-    one and passes it face down to the left. Each player discards to the person on
-    their left.\n\r\nThe last player places their discard into a trash pile. Cards
-    are picked up and passed quickly around the table until someone gets four of
-    a kind and takes a spoon from the center. Once the player with four of a kind
-    takes a spoon, anyone can take a spoon. The player left without a spoon gets
-    a letter. If at any time the draw cards run out, pause to reshuffle the trash
-    pile and keep going.\r\n\r\nHow to Keep Score\r\nThe winner is the last player
-    remaining. Players move closer to elimination each time they don\u2019t get a
-    spoon and take the next letter in the word S-P-O-O-N. Spell it and you\u2019re
-    out."
+  m_text: 'Pass cards around and try to collect four of the same rank. Once you do,
+    grab a spoon! If someone else grabs a spoon, be quick to grab one too, or you''ll
+    be out.
+
+
+    Space: Take or discard a card.
+
+    1-4: Swap a card to the corresponding
+    position.
+
+    Control: View the spoons.
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3084,7 +3081,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

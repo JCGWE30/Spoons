@@ -75,6 +75,7 @@ public class UIHandler : MonoBehaviour
 
             if (percent >= 1)
             {
+                viewingSpoons = false;
                 viewingCooldown = Time.time;
                 viewTimer.gameObject.SetActive(false);
                 takeSpoon.gameObject.SetActive(false);
@@ -148,8 +149,10 @@ public class UIHandler : MonoBehaviour
         UIManager.DiscardCard();
     }
 
-    private void ViewSpoons()
+    public void ViewSpoons()
     {
+        if (viewingCooldown + Constants.SPOONS_TOGGLE_VIEW_COOLDOWN > Time.time)
+            return;
         viewingSpoons = true;
         viewingCooldown = Time.time;
 

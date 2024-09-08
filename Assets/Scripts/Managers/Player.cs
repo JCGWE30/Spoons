@@ -26,7 +26,7 @@ public class Player : NetworkBehaviour
     public int letters { get { return _letters.Value; } set { _letters.Value = value; } }
     public bool dealer;
     public bool isSafe;
-    private bool isDead = false;
+    public bool isDead = false;
 
     public static Player localPlayer;
 

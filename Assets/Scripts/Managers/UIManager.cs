@@ -20,6 +20,7 @@ public class UIManager : NetworkBehaviour
 
     private List<TopText> activeTopTexts = new List<TopText>();
     private float cycleTime = -50f;
+    public static bool viewingCard { get { return UIHandler.instance.drawingCard; } }
 
     private void Start()
     {
@@ -53,8 +54,15 @@ public class UIManager : NetworkBehaviour
         instance.activeTopTexts.Add(topText);
     }
 
+    public static void ViewSpoons()
+    {
+        UIHandler.instance.ViewSpoons();
+    }
+
     public static void TakeCard()
     {
+        if (Player.localPlayer.deck.cardCount == 0)
+            return;
         if (UIHandler.instance.drawingCard)
             return;
         UIHandler.instance.drawingCard = true;
