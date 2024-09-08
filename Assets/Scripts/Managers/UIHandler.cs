@@ -121,6 +121,8 @@ public class UIHandler : MonoBehaviour
 
     private void StartRoundUI(List<Player> participants)
     {
+        if (Player.localPlayer.isDead)
+            return;
         mainPanel.gameObject.SetActive(true);
         viewButton.gameObject.SetActive(true);
     }

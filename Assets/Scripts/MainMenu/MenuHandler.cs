@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class MenuHandler : MonoBehaviour
 {
     [SerializeField] private Image lobbyPanel;
-    [SerializeField] private TMP_Text outputMessage;
     [SerializeField] private Image mainPanel;
     [SerializeField] private Button hostButton;
     [SerializeField] private Button quickJoinButton;
@@ -45,7 +44,12 @@ public class MenuHandler : MonoBehaviour
         playerName = setNameInput.text;
         if (playerName.Length<1)
         {
-            OutputText(Constants.TEXTS_NONAME, false);
+            ErrorReporter.Throw(Constants.TEXTS_NONAME);
+            return false;
+        }
+        if (playerName.Length > 16)
+        {
+            ErrorReporter.Throw(Constants.TEXTS_LONGNAME);
             return false;
         }
         return true;
@@ -64,7 +68,7 @@ public class MenuHandler : MonoBehaviour
         if (!CanLobby())
             return;
         if (!await LobbyHandler.JoinLobby(null,playerName))
-            OutputText(Constants.TEXTS_NOLOBBY, false);
+            ErrorReporter.Throw(Constants.TEXTS_NOLOBBY);
     }
 
     private async void JoinWithCode()
@@ -75,12 +79,12 @@ public class MenuHandler : MonoBehaviour
         string code = codeJoinInput.text;
         if (code == null)
         {
-            OutputText(Constants.TEXTS_NOCODE, false);
+            ErrorReporter.Throw(Constants.TEXTS_NOCODE);
             return;
         }
 
         if (!await LobbyHandler.JoinLobby(code,playerName))
-            OutputText(Constants.TEXTS_NOLOBBY, false);
+            ErrorReporter.Throw(Constants.TEXTS_NOLOBBY);
     }
 
     private void GoRules()
@@ -110,12 +114,5 @@ public class MenuHandler : MonoBehaviour
     {
         mainPanel.gameObject.SetActive(true);
         lobbyPanel.gameObject.SetActive(false);
-    }
-
-
-    private void OutputText(string text, bool good)
-    {
-        outputMessage.text = text;
-        outputMessage.color = good ? Color.green : Color.red;
     }
 }

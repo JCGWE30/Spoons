@@ -37,15 +37,17 @@ public class Constants
     public static readonly string ROUND_DISCONNECT_PLAYER = "Someone left. Starting a new round";
 
     //Lobby Defaults
-    public static readonly int LOBBY_MAX_PLAYERS = 4;
+    public static readonly int LOBBY_MAX_PLAYERS = 6;
     public static readonly int LOBBY_MIN_PLAYERS = 2;
     public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 30f;
     public static readonly float LOBBY_UPDATE_COOLDOWN = 1f;
 
     //Lobby Texts
-    public static readonly string TEXTS_NONAME = "Failed to join lobby: No name set";
-    public static readonly string TEXTS_NOLOBBY = "Failed to join lobby: No lobby found";
-    public static readonly string TEXTS_NOCODE = "Failed to join lobby: No code entered";
+    public static readonly string TEXTS_NONAME = "No name set";
+    public static readonly string TEXTS_LONGNAME = "Name too long (1-16 characters)";
+    public static readonly string TEXTS_NOLOBBY = "No lobby found";
+    public static readonly string TEXTS_NOCODE = "No code entered";
+    public static readonly string TEXTS_UNKNOWN = "Unknown Error";
 
     //Networking Keys
     public static readonly string KEY_PLAYER_NAME = "PlayerName";

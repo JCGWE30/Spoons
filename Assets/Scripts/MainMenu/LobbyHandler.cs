@@ -139,29 +139,36 @@ public class LobbyHandler : MonoBehaviour
     }
     private async Task<bool> HandleJoinLobby(string code,string name)
     {
-        UpdatePlayer(name);
-        Lobby localLobby;
-        if (code == null)
+        try
         {
-            QuickJoinLobbyOptions options = new QuickJoinLobbyOptions()
+            UpdatePlayer(name);
+            Lobby localLobby;
+            if (code == null)
             {
-                Player = player
-            };
-            localLobby = await LobbyService.Instance.QuickJoinLobbyAsync(options);
+                QuickJoinLobbyOptions options = new QuickJoinLobbyOptions()
+                {
+                    Player = player
+                };
+                localLobby = await LobbyService.Instance.QuickJoinLobbyAsync(options);
+            }
+            else
+            {
+                JoinLobbyByCodeOptions options = new JoinLobbyByCodeOptions()
+                {
+                    Player = player
+                };
+                localLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code, options);
+            }
+            if (localLobby == null)
+                return false;
+            lobby = localLobby;
+            onEnterLobby?.Invoke(lobby);
+            return true;
         }
-        else
+        catch (LobbyServiceException _)
         {
-            JoinLobbyByCodeOptions options = new JoinLobbyByCodeOptions()
-            {
-                Player = player
-            };
-            localLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code,options);
-        }
-        if (localLobby == null)
             return false;
-        lobby = localLobby;
-        onEnterLobby?.Invoke(lobby);
-        return true;
+        }
     }
     private async void HandleStartLobby(string name)
     {

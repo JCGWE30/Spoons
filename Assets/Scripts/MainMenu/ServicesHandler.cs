@@ -1,12 +1,15 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 
 public class ServicesHandler : MonoBehaviour
 {
+    [SerializeField] private TMP_Text playerId;
+
     public delegate void ServicesStarthandler();
     public ServicesStarthandler onServiceStart;
     private async void Start()
@@ -26,6 +29,7 @@ public class ServicesHandler : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+            playerId.text = "PlayerID: "+AuthenticationService.Instance.PlayerId;
         };
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
         onServiceStart?.Invoke();
