@@ -23,6 +23,7 @@ public class LobbyHandler : MonoBehaviour
     public static OnLobbyUpdate onExitLobby;
 
     private bool isHost;
+    public static bool host { get { return instance.isHost; } }
     private Lobby lobby;
     private LobbyPlayer player;
 
@@ -109,6 +110,11 @@ public class LobbyHandler : MonoBehaviour
     private async void HandleLeaveLobby()
     {
         await LobbyService.Instance.RemovePlayerAsync(lobby.Id,AuthenticationService.Instance.PlayerId);
+        if (isHost)
+        {
+            isHost = false;
+            await LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
+        }
         onExitLobby?.Invoke();
     }
     private async Task<bool> HandleJoinLobby(string code,string name)

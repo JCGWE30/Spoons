@@ -29,10 +29,12 @@ public class LobbyMenyManager : MonoBehaviour
         }
         lobbyName.text = "Loading lobby...";
         lobbyCode.text = "";
+        startGame.gameObject.SetActive(false);
     }
 
     private void UpdateLobby(Lobby lobby)
     {
+        startGame.gameObject.SetActive(LobbyHandler.host);
         foreach (Transform item in playerPanel.gameObject.transform)
         {
             Destroy(item.gameObject);
