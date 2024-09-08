@@ -58,8 +58,10 @@ public class LobbyHandler : MonoBehaviour
                     await LobbyService.Instance.SendHeartbeatPingAsync(lobby.Id);
             }
         }
-        catch (LobbyServiceException _)
+        catch (LobbyServiceException e)
         {
+            Debug.Log(e);
+            ErrorReporter.Throw(TEXTS_UNKNOWN);
             lobby = null;
             onExitLobby?.Invoke();
             return;
@@ -76,13 +78,15 @@ public class LobbyHandler : MonoBehaviour
                 fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
                 lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
                 onUpdate?.Invoke(lobby);
-                if ((lobby.Data[KEY_RELAY_CODE].Value ?? "0") != "0")
+                if ((lobby.Data?[KEY_RELAY_CODE]?.Value ?? "0") != "0")
                 {
                     JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
                 }
             }
-        }catch(LobbyServiceException _)
+        }catch(Exception e) when (e is LobbyServiceException || e is NullReferenceException)
         {
+            Debug.Log(e);
+            ErrorReporter.Throw(TEXTS_UNKNOWN);
             lobby = null;
             onExitLobby?.Invoke();
             return;
@@ -169,8 +173,10 @@ public class LobbyHandler : MonoBehaviour
             onEnterLobby?.Invoke(lobby);
             return true;
         }
-        catch (LobbyServiceException _)
+        catch (LobbyServiceException e)
         {
+            Debug.Log(e);
+            ErrorReporter.Throw(TEXTS_UNKNOWN);
             return false;
         }
     }
@@ -187,12 +193,8 @@ public class LobbyHandler : MonoBehaviour
                 { KEY_RELAY_CODE , new DataObject(DataObject.VisibilityOptions.Member,"0") }
             }
         };
-
-        Debug.Log("Shits GOIN");
-
         lobby = await LobbyService.Instance.CreateLobbyAsync(name + "'s lobby", LOBBY_MAX_PLAYERS,options);
         onEnterLobby?.Invoke(lobby);
-        Debug.Log("Lobby created");
     }
     private void UpdatePlayer(string name)
     {
@@ -210,6 +212,9 @@ public class LobbyHandler : MonoBehaviour
     {
         if(!isHost)
             await RelayManager.JoinRelay(relayCode, localName);
+        onUpdate = null;
+        onEnterLobby = null;
+        onExitLobby = null;
         SceneManager.LoadScene("Spoons");
     }
 }

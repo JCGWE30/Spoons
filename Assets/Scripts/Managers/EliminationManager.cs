@@ -20,7 +20,6 @@ public class EliminationManager : NetworkBehaviour
 
     public void KillPlayer(Player player)
     {
-        audioSource.volume = SettingsHandler.volume / 100f;
         StartCoroutine(KillSequence(player));
     }
 
@@ -39,6 +38,7 @@ public class EliminationManager : NetworkBehaviour
 
     private void PlayAudio(AudioClip clip)
     {
+        audioSource.volume = SettingsHandler.sfxVolume / 100f;
         audioSource.clip = clip;
         audioSource.Play();
     }

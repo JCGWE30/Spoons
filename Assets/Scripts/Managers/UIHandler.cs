@@ -29,6 +29,8 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField] private TMP_Text spoonCount;
 
+    [SerializeField] public Image ghostOverlay;
+
     public static UIHandler instance;
     public string topTextValue;
 
@@ -39,6 +41,8 @@ public class UIHandler : MonoBehaviour
     public Sprite[] cardSprites = new Sprite[4];
 
     private bool viewingSpoons = false;
+    private int timesViewed = 0;
+    private float viewModifier { get { return timesViewed * Constants.SPOONS_TOGGLE_VIEW_COOLDOWN_MODIFIER; } }
     private float viewingCooldown = -50f;
 
     private void Start()
@@ -87,12 +91,12 @@ public class UIHandler : MonoBehaviour
             viewTimer.fillAmount = 1 - percent;
             return;
         }
-        if (viewingCooldown + Constants.SPOONS_TOGGLE_VIEW_COOLDOWN > Time.time)
+        if (viewingCooldown + Constants.SPOONS_TOGGLE_VIEW_COOLDOWN + viewModifier > Time.time)
         {
             viewCooldown.gameObject.SetActive(true);
             float starttime = Time.time - viewingCooldown;
 
-            float percent = starttime / Constants.SPOONS_TOGGLE_VIEW_COOLDOWN;
+            float percent = starttime / (Constants.SPOONS_TOGGLE_VIEW_COOLDOWN + viewModifier);
 
             viewCooldownBar.fillAmount = percent;
         }
@@ -129,6 +133,7 @@ public class UIHandler : MonoBehaviour
 
     private void EndRoundUI(Player loser)
     {
+        timesViewed = 0;
         mainPanel.gameObject.SetActive(false);
         viewButton.gameObject.SetActive(false);
         viewTimer.gameObject.SetActive(false);
@@ -153,8 +158,10 @@ public class UIHandler : MonoBehaviour
 
     public void ViewSpoons()
     {
-        if (viewingCooldown + Constants.SPOONS_TOGGLE_VIEW_COOLDOWN > Time.time)
+        if (viewingCooldown + Constants.SPOONS_TOGGLE_VIEW_COOLDOWN + viewModifier > Time.time)
             return;
+
+        timesViewed++;
         viewingSpoons = true;
         viewingCooldown = Time.time;
 

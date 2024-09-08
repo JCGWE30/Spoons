@@ -115,4 +115,9 @@ public class MenuHandler : MonoBehaviour
         mainPanel.gameObject.SetActive(true);
         lobbyPanel.gameObject.SetActive(false);
     }
+
+    public static void QuitGame()
+    {
+        Application.Quit();
+    }
 }

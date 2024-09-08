@@ -24,6 +24,7 @@ public class Constants
     public static readonly string SPOONS_TRIGGER_WORD = "SPOON";
     public static readonly int SPOON_TRIGGER_WORD_LENGTH = 5;
     public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 2f;
+    public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN_MODIFIER = 1f;
     public static readonly float SPOONS_VIEW_TIMER = 1f;
 
     //Top Texts

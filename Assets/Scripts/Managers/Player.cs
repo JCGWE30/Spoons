@@ -122,6 +122,8 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void KillRpc()
     {
+        if (IsOwner)
+            UIManager.MarkDead();
         isDead = true;
     }
     [Rpc(SendTo.Owner)]

@@ -7,25 +7,49 @@ using UnityEngine.UI;
 public class SettingsHandler : MonoBehaviour
 {
     [SerializeField] private Button backButton;
-    [SerializeField] private TMP_Text volumeDisplay;
-    [SerializeField] private Slider volumeSlider;
     [SerializeField] private Image settingsPanel;
 
-    public static int volume { get { return (int) instance.volumeSlider.value; } }
+    [SerializeField] private TMP_Text sfxDisplay;
+    [SerializeField] private Slider sfxSlider;
+
+    [SerializeField] private TMP_Text musicDisplay;
+    [SerializeField] private Slider musicSlider;
+
+    [SerializeField] private AudioSource audioPlayer;
+    [SerializeField] private AudioClip sfxTest;
+    [SerializeField] private AudioClip musicTest;
+
+    public static int musicVolume = 100;
+    public static int sfxVolume = 100;
 
     private static SettingsHandler instance;
 
     private void Start()
     {
         instance = this;
-        volumeSlider.value = 0;
+        musicSlider.value = 100;
+        sfxSlider.value = 100;
         settingsPanel.gameObject.SetActive(false);
         backButton.onClick.AddListener(Back);
+        musicSlider.onValueChanged.AddListener(delegate { MusicChange(); });
+        sfxSlider.onValueChanged.AddListener(delegate { EffectChange(); });
     }
 
     private void Update()
     {
-        volumeDisplay.text = "Game Volume: " + volumeSlider.value;
+        musicDisplay.text = "Music Volume: " + musicSlider.value;
+        sfxDisplay.text = "Effects Volume: " + sfxSlider.value;
+    }
+
+    private void MusicChange()
+    {
+        musicVolume = (int)musicSlider.value;
+        PlayAudio(musicTest,musicVolume);
+    }
+    private void EffectChange()
+    {
+        sfxVolume = (int)sfxSlider.value;
+        PlayAudio(sfxTest,sfxVolume);
     }
 
     public static void EnterSettings()
@@ -37,5 +61,12 @@ public class SettingsHandler : MonoBehaviour
     {
         settingsPanel.gameObject.SetActive(false);
         MenuHandler.BackToMenu();
+    }
+
+    private void PlayAudio(AudioClip clip,int vol)
+    {
+        audioPlayer.volume = vol / 100f;
+        audioPlayer.clip = clip;
+        audioPlayer.Play();
     }
 }

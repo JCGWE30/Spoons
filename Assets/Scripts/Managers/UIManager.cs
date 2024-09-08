@@ -60,6 +60,11 @@ public class UIManager : NetworkBehaviour
         UIHandler.instance.ViewSpoons();
     }
 
+    public static void MarkDead()
+    {
+        UIHandler.instance.ghostOverlay.gameObject.SetActive(true);
+    }
+
     public static void TakeCard()
     {
         if (Player.localPlayer.deck.cardCount == 0)
