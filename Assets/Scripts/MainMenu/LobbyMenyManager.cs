@@ -13,12 +13,15 @@ public class LobbyMenyManager : MonoBehaviour
     [SerializeField] private Button leaveLobby;
     [SerializeField] private TMP_Text lobbyName;
     [SerializeField] private TMP_Text lobbyCode;
+    [SerializeField] private Button instaKill;
+
     private void Start()
     {
         LobbyHandler.onUpdate += UpdateLobby;
         LobbyHandler.onEnterLobby += _ => ResetLobby();
         startGame.onClick.AddListener(delegate { StartGame(); });
         leaveLobby.onClick.AddListener(delegate { LeaveLobby(); });
+        instaKill.onClick.AddListener(delegate { SetInstaKill(); });
     }
 
     private void ResetLobby()
@@ -47,6 +50,7 @@ public class LobbyMenyManager : MonoBehaviour
         }
         lobbyName.text = lobby.Name;
         lobbyCode.text = "Code: " + lobby.LobbyCode;
+        instaKill.image.color = LobbyHandler.isInstaKill ? Color.green : Color.red;
     }
 
     private void StartGame()
@@ -57,5 +61,10 @@ public class LobbyMenyManager : MonoBehaviour
     private void LeaveLobby()
     {
         LobbyHandler.LeaveLobby();
+    }
+
+    private void SetInstaKill()
+    {
+        LobbyHandler.SetInstaKill(!LobbyHandler.isInstaKill);
     }
 }

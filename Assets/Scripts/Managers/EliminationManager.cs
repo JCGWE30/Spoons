@@ -38,6 +38,7 @@ public class EliminationManager : NetworkBehaviour
 
     private void PlayAudio(AudioClip clip)
     {
+        audioSource.loop = false;
         audioSource.volume = SettingsHandler.sfxVolume / 100f;
         audioSource.clip = clip;
         audioSource.Play();

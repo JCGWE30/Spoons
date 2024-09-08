@@ -28,14 +28,16 @@ public class Constants
     public static readonly float SPOONS_VIEW_TIMER = 1f;
 
     //Top Texts
+    public static readonly string ROUND_GAME_START = "Welcome to spoons, lets get started!";
     public static readonly string ROUND_START_TEXT = "A new round is starting! {0} is the dealer. Good luck!";
     public static readonly string ROUND_END_TEXT = "The round has ended!";
-    public static readonly string ROUND_SPOON_EARLY_TEXT = "{0} has jumped the gun and grabbed a spoon to early!";
+    public static readonly string ROUND_SPOON_EARLY_TEXT = "{0} has jumped the gun and grabbed a spoon too early!";
     public static readonly string ROUND_SPOON_LATE_TEXT = "{0} was too slow to react and failed to grab a spoon!";
     public static readonly string ROUND_LIVES_LEFT = "They have {0} letters spelling {1}";
     public static readonly string ROUND_NO_LIVES = "They will be taken out back shortly";
     public static readonly string ROUND_WINNER_TEXT = "Congrats {0}, you win!";
     public static readonly string ROUND_DISCONNECT_PLAYER = "Someone left. Starting a new round";
+    public static readonly string ROUND_MODIFIER_INSTA_KILL = "The one life modifier is enabled. So be careful as you only get 1 letter before getting eliminated!";
 
     //Lobby Defaults
     public static readonly int LOBBY_MAX_PLAYERS = 6;
@@ -46,11 +48,23 @@ public class Constants
     //Lobby Texts
     public static readonly string TEXTS_NONAME = "No name set";
     public static readonly string TEXTS_LONGNAME = "Name too long (1-16 characters)";
+    public static readonly string TEXTS_ILLEGAL = "Name contains illegal characters";
+
     public static readonly string TEXTS_NOLOBBY = "No lobby found";
-    public static readonly string TEXTS_NOCODE = "No code entered";
+    public static readonly string TEXTS_NOCODE = "No code entered/Code is invalid";
     public static readonly string TEXTS_UNKNOWN = "Unknown Error";
+    public static readonly string TEXTS_CONFLICT = "Lobby conflict";
+    public static readonly string TEXTS_FULL = "Lobby full";
+    public static readonly string TEXTS_NOLOBBIES = "No lobbies found";
 
     //Networking Keys
     public static readonly string KEY_PLAYER_NAME = "PlayerName";
     public static readonly string KEY_RELAY_CODE = "RelayCode";
+    public static readonly string KEY_INSTA_KILL = "StateInstaKill";
+
+    //Leaderboards
+    public static readonly string LEADERBOARD_ID = "4_of_a_kinds";
+
+    //Auth
+    public static readonly string AUTH_DEFAULTNAME = "SpoonsPlayer";
 }

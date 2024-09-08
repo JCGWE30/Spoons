@@ -1,6 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Security;
+using System.Threading.Tasks;
 using TMPro;
+using Unity.Mathematics;
+using Unity.Services.Authentication;
+using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +25,8 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] private TMP_InputField codeJoinInput;
     [SerializeField] private TMP_InputField setNameInput;
 
+    [SerializeField] private Image leaderboard;
+
     private string playerName;
     private static MenuHandler instance;
 
@@ -28,6 +36,7 @@ public class MenuHandler : MonoBehaviour
         Debug.Log(lobbyPanel+" Is the panel");
         lobbyPanel.gameObject.SetActive(false);
         mainPanel.gameObject.SetActive(true);
+        leaderboard.gameObject.SetActive(true);
 
         hostButton.onClick.AddListener(delegate { StartLobby(); });
         quickJoinButton.onClick.AddListener(delegate { QuickJoin(); });
@@ -37,9 +46,13 @@ public class MenuHandler : MonoBehaviour
 
         LobbyHandler.onEnterLobby += EnterLobby;
         LobbyHandler.onExitLobby += ExitLobby;
+        ServicesHandler.onServiceStart += () => {
+            var txt = AuthenticationService.Instance.PlayerName;
+            setNameInput.text = txt.Split("#")[0];
+        };
     }
 
-    private bool CanLobby()
+    private async Task<bool> CanLobby()
     {
         playerName = setNameInput.text;
         if (playerName.Length<1)
@@ -52,12 +65,17 @@ public class MenuHandler : MonoBehaviour
             ErrorReporter.Throw(Constants.TEXTS_LONGNAME);
             return false;
         }
+        if (!playerName.All(char.IsLetterOrDigit))
+        {
+            ErrorReporter.Throw(Constants.TEXTS_ILLEGAL);
+            return false;
+        }
         return true;
     }
 
-    private void StartLobby()
+    private async void StartLobby()
     {
-        if (!CanLobby())
+        if (!await CanLobby())
             return;
         Debug.Log("Shits GOIN PT1");
         LobbyHandler.StartLobby(playerName);
@@ -65,15 +83,14 @@ public class MenuHandler : MonoBehaviour
 
     private async void QuickJoin()
     {
-        if (!CanLobby())
+        if (!await CanLobby())
             return;
-        if (!await LobbyHandler.JoinLobby(null,playerName))
-            ErrorReporter.Throw(Constants.TEXTS_NOLOBBY);
+        LobbyHandler.JoinLobby(null, playerName);
     }
 
     private async void JoinWithCode()
     {
-        if (!CanLobby())
+        if (!await CanLobby())
             return;
 
         string code = codeJoinInput.text;
@@ -83,36 +100,40 @@ public class MenuHandler : MonoBehaviour
             return;
         }
 
-        if (!await LobbyHandler.JoinLobby(code,playerName))
-            ErrorReporter.Throw(Constants.TEXTS_NOLOBBY);
+        LobbyHandler.JoinLobby(code, playerName);
     }
 
     private void GoRules()
     {
         instance.mainPanel.gameObject.SetActive(false);
+        leaderboard.gameObject.SetActive(false);
         RulesHandler.EnterRules();
     }
 
     private void GoSettings()
     {
         instance.mainPanel.gameObject.SetActive(false);
+        leaderboard.gameObject.SetActive(false);
         SettingsHandler.EnterSettings();
     }
 
     public static void BackToMenu()
     {
         instance.mainPanel.gameObject.SetActive(true);
+        instance.leaderboard.gameObject.SetActive(true);
     }
 
     private void EnterLobby(Lobby lobby)
     {
         mainPanel.gameObject.SetActive(false);
+        leaderboard.gameObject.SetActive(false);
         lobbyPanel.gameObject.SetActive(true);
     }
 
     private void ExitLobby()
     {
         mainPanel.gameObject.SetActive(true);
+        leaderboard.gameObject.SetActive(true);
         lobbyPanel.gameObject.SetActive(false);
     }
 

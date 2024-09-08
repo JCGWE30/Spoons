@@ -109,6 +109,13 @@ public class GameManager : NetworkBehaviour
     {
         PositionManager.ArrangePlayers(instance.playerList);
         onGameStart?.Invoke();
+        List<string> texts = new List<string>
+        {
+            Constants.ROUND_GAME_START
+        };
+        if (LobbyHandler.isInstaKill)
+            texts.Add(Constants.ROUND_MODIFIER_INSTA_KILL);
+        UIManager.SendTopText(texts.ToArray(), Constants.PLAYER_TOPTEXT_TIME, null);
         StartRound();
     }
 
@@ -152,7 +159,7 @@ public class GameManager : NetworkBehaviour
 
         texts.Add(string.Format(Constants.ROUND_LIVES_LEFT, loser.letters, Constants.SPOONS_TRIGGER_WORD.Substring(0, loser.letters)));
 
-        if (loser.letters >= Constants.SPOON_TRIGGER_WORD_LENGTH)
+        if (loser.letters >= Constants.SPOON_TRIGGER_WORD_LENGTH || LobbyHandler.isInstaKill)
         {
             texts.Add(Constants.ROUND_NO_LIVES);
         }
@@ -163,7 +170,7 @@ public class GameManager : NetworkBehaviour
 
         TopTextEndHandler endEvent = () =>
         {
-            if (loser.letters >= Constants.SPOON_TRIGGER_WORD_LENGTH)
+            if (loser.letters >= Constants.SPOON_TRIGGER_WORD_LENGTH || LobbyHandler.isInstaKill)
                 EliminationManager.instance.KillPlayer(loser);
             else
                 StartRound();

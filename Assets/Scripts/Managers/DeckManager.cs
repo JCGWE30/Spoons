@@ -42,15 +42,12 @@ public class DeckManager : NetworkBehaviour
     }
     public static bool HasSafeCards(Player p)
     {
-        Debug.Log("Scanning " + p.displayName + " for safe cards");
         int handValue = p.hand[0].value;
         foreach (var item in p.hand)
         {
-            Debug.Log("Scanning " + item.GetName() + " for value " + handValue);
             if (item.value != handValue)
                 return false;
         }
-        Debug.Log("Cards are safe, taking spoon");
         return true;
     }
     [Rpc(SendTo.Server)]

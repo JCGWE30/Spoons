@@ -27,8 +27,8 @@ public class SettingsHandler : MonoBehaviour
     private void Start()
     {
         instance = this;
-        musicSlider.value = 100;
-        sfxSlider.value = 100;
+        musicSlider.value = musicVolume;
+        sfxSlider.value = sfxVolume;
         settingsPanel.gameObject.SetActive(false);
         backButton.onClick.AddListener(Back);
         musicSlider.onValueChanged.AddListener(delegate { MusicChange(); });

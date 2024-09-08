@@ -150,6 +150,8 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Owner)]
     public void SetSafeRpc()
     {
+        if(DeckManager.HasSafeCards(this))
+            LeaderboardManager.UpdateScore();
         onIsSafe?.Invoke();
     }
     [Rpc(SendTo.Server)]
