@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 1.342}
-  m_SizeDelta: {x: 2.76, y: 0.5}
+  m_SizeDelta: {x: 20, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &3703460890538494675
 MeshRenderer:
@@ -924,9 +924,9 @@ MonoBehaviour:
         byte0123: 0
         byte0124: 0
         byte0125: 0
-  letters: 0
   dealer: 0
   isSafe: 0
+  isDead: 0
 --- !u!1 &7187001267389893123
 GameObject:
   m_ObjectHideFlags: 0
