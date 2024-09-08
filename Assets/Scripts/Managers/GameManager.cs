@@ -100,7 +100,16 @@ public class GameManager : NetworkBehaviour
         playersInRound[player.OwnerClientId] = player;
 
         if (playersInRound.Count == RelayManager.lobbySize)
-            StartRound();
+        {
+            StartGame();
+        }
+    }
+
+    public static void StartGame()
+    {
+        PositionManager.ArrangePlayers(instance.playerList);
+        onGameStart?.Invoke();
+        StartRound();
     }
 
     public static void StartRound()
@@ -116,7 +125,6 @@ public class GameManager : NetworkBehaviour
             UIManager.SendTopText(new[] { string.Format(Constants.ROUND_WINNER_TEXT, instance.playerList[0].displayName) }, Constants.PLAYER_TOPTEXT_TIME, gameEndEvent);
             return;
         }
-        PositionManager.ArrangePlayers(instance.playerList);
         Player dealer = DeckManager.SetupDecks(instance.playerList);
         PositionManager.LookAtPlayer(dealer);
         string startText = string.Format(Constants.ROUND_START_TEXT, dealer.displayName);
