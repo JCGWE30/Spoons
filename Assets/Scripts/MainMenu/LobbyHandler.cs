@@ -230,6 +230,7 @@ public class LobbyHandler : MonoBehaviour
             fetchTimer = Time.time;
             heartbeatTimer = Time.time;
             lobby = await LobbyService.Instance.CreateLobbyAsync(name + "'s lobby", LOBBY_MAX_PLAYERS, options);
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(name);
             onEnterLobby?.Invoke(lobby);
         }catch(LobbyServiceException e)
         {
