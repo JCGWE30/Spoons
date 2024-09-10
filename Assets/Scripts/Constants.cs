@@ -67,4 +67,8 @@ public class Constants
 
     //Auth
     public static readonly string AUTH_DEFAULTNAME = "SpoonsPlayer";
+
+    //PlayerPrefs
+    public static readonly string PREFS_MUSICVOLUME = "musicVolume";
+    public static readonly string PREFS_SFXVOLUME = "sfxVolume";
 }
