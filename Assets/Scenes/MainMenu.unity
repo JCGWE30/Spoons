@@ -4954,7 +4954,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -500, y: 75}
+  m_AnchoredPosition: {x: -500.00006, y: 75}
   m_SizeDelta: {x: -1000, y: -150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &978821134
@@ -8913,7 +8913,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -715.00006, y: -125.42999}
+  m_AnchoredPosition: {x: -714.99994, y: -125.42999}
   m_SizeDelta: {x: -1430, y: -250.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1848723305
@@ -9545,7 +9545,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 100
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &2011673840
 Canvas:
   m_ObjectHideFlags: 0
@@ -9556,7 +9556,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 202321076}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
