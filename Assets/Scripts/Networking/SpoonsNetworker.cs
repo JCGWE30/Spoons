@@ -25,7 +25,7 @@ public class SpoonsNetworker : MonoBehaviour
         else
         {
             JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(RelayManager.relayCode);
-            manager.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
+            manager.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "wss"));
 
             Debug.Log("Starting client");
             NetworkManager.Singleton.StartClient();

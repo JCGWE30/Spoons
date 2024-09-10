@@ -32,7 +32,7 @@ public class RelayManager : MonoBehaviour
 
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            relayData = new RelayServerData(allocation, "dtls");
+            relayData = new RelayServerData(allocation, "wss");
             isHost = true;
             return joinCode;
         }catch(RelayServiceException e)
