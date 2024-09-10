@@ -31,7 +31,7 @@ public class SettingsHandler : MonoBehaviour
             ? PlayerPrefs.GetInt(Constants.PREFS_MUSICVOLUME) : musicVolume;
 
         sfxSlider.value = PlayerPrefs.HasKey(Constants.PREFS_SFXVOLUME)
-            ? PlayerPrefs.GetInt(Constants.PREFS_SFXVOLUME) : musicVolume; ;
+            ? PlayerPrefs.GetInt(Constants.PREFS_SFXVOLUME) : sfxVolume; ;
 
         settingsPanel.gameObject.SetActive(false);
         backButton.onClick.AddListener(Back);
@@ -54,7 +54,7 @@ public class SettingsHandler : MonoBehaviour
     private void EffectChange()
     {
         sfxVolume = (int)sfxSlider.value;
-        PlayerPrefs.SetInt(Constants.PREFS_SFXVOLUME, musicVolume);
+        PlayerPrefs.SetInt(Constants.PREFS_SFXVOLUME, sfxVolume);
         PlayAudio(sfxTest,sfxVolume);
     }
 
