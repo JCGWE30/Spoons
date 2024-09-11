@@ -23,7 +23,7 @@ public class MenuHandler : MonoBehaviour
 
     [SerializeField] private Button codeJoinButton;
     [SerializeField] private InputField codeJoinInput;
-    [SerializeField] private TMP_InputField setNameInput;
+    [SerializeField] private InputField setNameInput;
 
     [SerializeField] private Image leaderboard;
 
