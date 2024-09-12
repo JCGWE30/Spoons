@@ -59,8 +59,9 @@ public class Constants
 
     //Networking Keys
     public static readonly string KEY_PLAYER_NAME = "PlayerName";
-    public static readonly string KEY_RELAY_CODE = "RelayCode";
-    public static readonly string KEY_INSTA_KILL = "StateInstaKill";
+    public static readonly string KEY_PLAYER_SKIN = "PlayerSkin";
+    public static readonly string KEY_LOBBY_RELAYCODE = "RelayCode";
+    public static readonly string KEY_LOBBY_MODIFIER_INSTAKILL = "StateInstaKill";
 
     //Leaderboards
     public static readonly string LEADERBOARD_ID = "4_of_a_kinds";
@@ -71,4 +72,11 @@ public class Constants
     //PlayerPrefs
     public static readonly string PREFS_MUSICVOLUME = "musicVolume";
     public static readonly string PREFS_SFXVOLUME = "sfxVolume";
+
+    //Skins
+    public static readonly string SKINS_EQUIP = "Equip Skin";
+    public static readonly string SKINS_UNEQUIP = "Unequip Skin";
+    public static readonly string SKINS_LOCKED = "Locked";
+    public static readonly string SKINS_RESPONSE_EQUIP = "Skin equipped";
+    public static readonly string SKINS_RESPONSE_UNEQUIP = "Skin unequipped";
 }

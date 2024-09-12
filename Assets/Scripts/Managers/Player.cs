@@ -20,7 +20,9 @@ public class Player : NetworkBehaviour
     public Deck deck;
     public Card[] hand = new Card[4];
     public NetworkVariable<FixedString128Bytes> _name = new NetworkVariable<FixedString128Bytes>("");
+    public NetworkVariable<FixedString128Bytes> _skin = new NetworkVariable<FixedString128Bytes>("");
     public string displayName { get { return _name.Value.ToString(); } }
+    public string activeSkin { get { return _skin.Value.ToString(); } }
 
     private NetworkVariable<int> _letters = new NetworkVariable<int>(0);
     public int letters { get { return _letters.Value; } set { _letters.Value = value; } }
@@ -51,6 +53,13 @@ public class Player : NetworkBehaviour
             Camera.main.transform.position = new Vector3(0, Constants.PLAYER_CAMERA_OFFSET, 0);
             localPlayer = this;
         }
+
+        _skin.OnValueChanged += (x, y) =>
+        {
+            UpdateSkin();
+        };
+        if (activeSkin != "")
+            UpdateSkin();
     }
 
     private void Update()
@@ -87,6 +96,7 @@ public class Player : NetworkBehaviour
         {
             Debug.Log("My name is " + RelayManager.localName);
             SetNameRpc(RelayManager.localName);
+            SetSkinRpc(SkinsHandler.ActiveSkin);
         }
     }
     public void SyncDecks()
@@ -117,6 +127,11 @@ public class Player : NetworkBehaviour
         isDead = true;
         transform.Find("Marker").transform.forward = new Vector3(90, 0, 0);
         KillRpc();
+    }
+
+    private void UpdateSkin()
+    {
+        marker.GetComponent<MeshRenderer>().material = SkinsHandler.GetMaterial(activeSkin);
     }
 
     [Rpc(SendTo.Everyone)]
@@ -159,5 +174,12 @@ public class Player : NetworkBehaviour
     {
         if (displayName == "")
             _name.Value = name;
+    }
+    [Rpc(SendTo.Server)]
+    public void SetSkinRpc(string skin)
+    {
+        if (skin == "none")
+            return;
+        _skin.Value = skin;
     }
 }

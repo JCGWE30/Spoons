@@ -75,11 +75,11 @@ public class LobbyHandler : MonoBehaviour
             {
                 fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
                 lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
-                isInstaKill = lobby.Data[KEY_INSTA_KILL].Value == "true";
+                isInstaKill = lobby.Data[KEY_LOBBY_MODIFIER_INSTAKILL].Value == "true";
                 onUpdate?.Invoke(lobby);
-                if (lobby.Data[KEY_RELAY_CODE].Value != "0")
+                if (lobby.Data[KEY_LOBBY_RELAYCODE].Value != "0")
                 {
-                    JoinGame(lobby.Data[KEY_RELAY_CODE].Value);
+                    JoinGame(lobby.Data[KEY_LOBBY_RELAYCODE].Value);
                 }
             }
         }catch(LobbyServiceException e)
@@ -119,14 +119,14 @@ public class LobbyHandler : MonoBehaviour
                 return;
             isStarting = true;
             string code = await RelayManager.CreateGame(lobby.Players.Count, localName);
-            Debug.Log("Starting game with relay code " + code + " " + KEY_RELAY_CODE);
+            Debug.Log("Starting game with relay code " + code + " " + KEY_LOBBY_RELAYCODE);
             await LobbyService.Instance.UpdateLobbyAsync(lobby.Id, new UpdateLobbyOptions()
             {
                 IsLocked = true,
                 IsPrivate = true,
                 Data = new Dictionary<string, DataObject>
             {
-                { KEY_RELAY_CODE , new DataObject(DataObject.VisibilityOptions.Member,code) }
+                { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,code) }
             }
             });
         }catch(LobbyServiceException e)
@@ -147,7 +147,7 @@ public class LobbyHandler : MonoBehaviour
             {
                 Data = new Dictionary<string, DataObject>
             {
-                { KEY_INSTA_KILL , new DataObject(DataObject.VisibilityOptions.Public,stateString) }
+                { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,stateString) }
             }
             });
         }catch(LobbyServiceException e)
@@ -223,8 +223,8 @@ public class LobbyHandler : MonoBehaviour
                 Player = player,
                 Data = new Dictionary<string, DataObject>
             {
-                { KEY_RELAY_CODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
-                { KEY_INSTA_KILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
+                { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
+                { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
             }
             };
             fetchTimer = Time.time;
@@ -245,7 +245,8 @@ public class LobbyHandler : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public,name) }
+                { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public,name) },
+                { KEY_PLAYER_SKIN, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public,SkinsHandler.ActiveSkin) }
             }
         };
     }
