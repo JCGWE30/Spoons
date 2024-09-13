@@ -13,7 +13,7 @@ public class PeterCaller : MonoBehaviour, ISkinCaller
         try
         {
             LeaderboardEntry score = await LeaderboardsService.Instance.GetPlayerScoreAsync(Constants.LEADERBOARD_ID);
-            return score.Rank == 15;
+            return score.Score >= 20;
         }catch(LeaderboardsException e)
         {
             Debug.Log(e);

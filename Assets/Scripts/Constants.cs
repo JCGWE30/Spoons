@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 public class Constants
 {
+#if UNITY_EDITOR
+    public static readonly bool DEBUG_MODE = true;
+#else
+    public static readonly bool DEBUG_MODE = false;
+#endif
+
     //Networking
     public static readonly string NETWORK_DISCONNECT_MESSAGE = "Sorry this lobby is full";
 
@@ -72,6 +78,7 @@ public class Constants
     //PlayerPrefs
     public static readonly string PREFS_MUSICVOLUME = "musicVolume";
     public static readonly string PREFS_SFXVOLUME = "sfxVolume";
+    public static readonly string PREFS_ACTIVESKIN = "activeSkin";
 
     //Skins
     public static readonly string SKINS_EQUIP = "Equip Skin";

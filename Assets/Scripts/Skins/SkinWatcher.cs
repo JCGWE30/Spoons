@@ -12,17 +12,15 @@ public class SkinWatcher : MonoBehaviour
     [SerializeField] private SkinObject skin;
     [SerializeField] private MonoBehaviour caller;
 
-    private delegate void SkinEquipHandler();
-    private static SkinEquipHandler onSkinEquipped;
+    public delegate void SkinEquipHandler();
+    public static SkinEquipHandler onSkinEquipped;
 
     private bool canEquip = false;
-    private TMP_Text label;
     private Button equipButton;
     private GameObject skinShowcase;
 
-    private async void Start()
+    private async void Awake()
     {
-        label = transform.Find("SkinLabel").gameObject.GetComponent<TMP_Text>();
         equipButton = transform.Find("EquipButton").gameObject.GetComponent<Button>();
         skinShowcase = transform.Find("SkinShowcase").gameObject;
 
@@ -36,7 +34,6 @@ public class SkinWatcher : MonoBehaviour
         Debug.Log("Setting button " + equipButton);
         equipButton.onClick.AddListener(AttemptEquip);
 
-        label.text = skin.skinName;
         onSkinEquipped += () =>
         {
             string equipText = "";
@@ -52,9 +49,14 @@ public class SkinWatcher : MonoBehaviour
         };
     }
 
+    private void Update()
+    {
+        skinShowcase.transform.Rotate(0, 0.1f, 0);
+    }
+
     private void AttemptEquip()
     {
-        if (canEquip)
+        if (canEquip||Constants.DEBUG_MODE)
         {
             if (activeSkin == skin)
             {

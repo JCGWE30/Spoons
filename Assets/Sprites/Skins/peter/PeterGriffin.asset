@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texture: {fileID: 2100000, guid: 00f88f52a495a814596140e7f9f9a5cd, type: 2}
   skinName: Peter Skin
-  unlockReqs: Must be last on the leaderboard
+  unlockReqs: Must have at least 50 4 of a kinds

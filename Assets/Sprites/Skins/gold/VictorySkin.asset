@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6293c4f27490cdd40bd0d9054fd18a06, type: 3}
-  m_Name: GoldSkin
+  m_Name: VictorySkin
   m_EditorClassIdentifier: 
   texture: {fileID: 2100000, guid: a70075f997885804492ff1ebffb7d5a2, type: 2}
-  skinName: Gold Skin
+  skinName: Victory Skin
   unlockReqs: Must be #1 on the leaderboard

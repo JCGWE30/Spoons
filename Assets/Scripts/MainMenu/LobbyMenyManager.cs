@@ -46,7 +46,7 @@ public class LobbyMenyManager : MonoBehaviour
         {
             TMP_Text playerName = Instantiate(playerPrefab);
             playerName.text = player.Data[Constants.KEY_PLAYER_NAME].Value;
-            playerName.transform.parent = playerPanel.transform;
+            playerName.transform.SetParent(playerPanel.transform,false);
         }
         lobbyName.text = lobby.Name;
         lobbyCode.text = "Code: " + lobby.LobbyCode;
