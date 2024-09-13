@@ -65,6 +65,11 @@ public class GameManager : NetworkBehaviour
     {
         return instance.playersInRound[id];
     }
+
+    public static List<Player> GetPlayers()
+    {
+        return instance.playerList;
+    }
     public static void TakeSpoon(ulong id)
     {
         instance.HandleSpoonRpc(id);

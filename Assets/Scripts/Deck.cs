@@ -68,8 +68,19 @@ public class Deck : MonoBehaviour
         }
     }
 
-    public void ShuffleDeck() {
+    public void FullShuffle() {
         cards.Clear();
+        cards.Add(new Card(0, 0));
+        cards.Add(new Card(0, 1));
+        cards.Add(new Card(0, 2));
+        cards.Add(new Card(0, 3));
+        cards.Add(new Card(0, 4));
+        cards.Add(new Card(0, 5));
+        cards.Add(new Card(0, 6));
+        cards.Add(new Card(0, 7));
+        cards.Add(new Card(0, 8));
+        cards.Add(new Card(0, 9));
+        return;
         foreach (var suite in Constants.CARD_SUITES)
         {
             foreach (var value in Constants.CARD_VALUES)
@@ -80,6 +91,11 @@ public class Deck : MonoBehaviour
                 cards.Add(new Card(suiteIndex, valueIndex));
             }
         }
+        cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
+    }
+
+    public void Shuffle()
+    {
         cards = cards.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
     }
 

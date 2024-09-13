@@ -36,6 +36,15 @@ public class SkinWatcher : MonoBehaviour
 
         onSkinEquipped += () =>
         {
+            if (activeSkin == skin)
+            {
+                if (!(canEquip||Constants.DEBUG_MODE))
+                {
+                    activeSkin = null;
+                    onSkinEquipped?.Invoke();
+                    return;
+                }
+            }
             string equipText = "";
 
             if (activeSkin == skin)

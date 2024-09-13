@@ -8,6 +8,10 @@ public class DeckManager : NetworkBehaviour
 {
     private static DeckManager instance;
 
+    [SerializeField] private Deck discardedCards;
+
+    private Player dealer;
+
     private void Start()
     {
         instance = this;
@@ -15,14 +19,16 @@ public class DeckManager : NetworkBehaviour
 
     public static Player SetupDecks(List<Player> players)
     {
+        instance.discardedCards = new Deck();
         players.ForEach((p) => p.deck.Wipe());
         Player dealer = players[Random.Range(0, players.Count)];
+        instance.dealer = dealer;
         dealer.SetDealer(players);
-        dealer.deck.ShuffleDeck();
+        dealer.deck.FullShuffle();
         foreach (var player in players)
         {
             player.isSafe = false;
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 player.hand[i] = dealer.deck.TakeCard();
             }
@@ -50,8 +56,22 @@ public class DeckManager : NetworkBehaviour
         }
         return true;
     }
+    private void CheckForStalemate()
+    {
+        foreach (Player player in GameManager.GetPlayers())
+        {
+            if (HasSafeCards(player) || player.deck.cardCount > 0)
+                return;
+        }
+        Debug.Log("Stalemate Detected");
+        foreach (Card card in discardedCards.GetCards())
+        {
+            dealer.deck.AddCard(card);
+        }
+        dealer.SyncDecks();
+    }
     [Rpc(SendTo.Server)]
-    private void SwapCardRpc(ulong id,int cardSpot)
+    private void SwapCardRpc(ulong id, int cardSpot)
     {
         Player player = GameManager.GetPlayer(id);
         Player nextPlayer = GameManager.NextPlayer(player);
@@ -62,9 +82,14 @@ public class DeckManager : NetworkBehaviour
         player.SyncDecks();
 
         if (nextPlayer == null)
+        {
+            discardedCards.AddCard(card);
+            CheckForStalemate();
             return;
+        }
         nextPlayer.deck.AddCard(sendingCard);
         nextPlayer.SyncDecks();
+        CheckForStalemate();
     }
 
     [Rpc(SendTo.Server)]
@@ -77,8 +102,13 @@ public class DeckManager : NetworkBehaviour
         player.SyncDecks();
 
         if (nextPlayer == null)
+        {
+            discardedCards.AddCard(card);
+            CheckForStalemate();
             return;
+        }
         nextPlayer.deck.AddCard(card);
         nextPlayer.SyncDecks();
+        CheckForStalemate();
     }
 }
