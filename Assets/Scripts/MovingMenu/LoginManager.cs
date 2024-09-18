@@ -10,11 +10,14 @@ using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
 {
+    [SerializeField] private Image mainPanel;
     [SerializeField] private InputField username;
     [SerializeField] private InputField password;
     [SerializeField] private Button loginButton;
     [SerializeField] private Button registerButton;
     [SerializeField] private TMP_Text title;
+
+    //DEBUG CREDS USER: hitheresafe PASS: HeyThere123!
 
     private bool registering = false;
 
@@ -47,13 +50,16 @@ public class LoginManager : MonoBehaviour
 
     private async void AttemptLogin()
     {
-        if (username == null)
+        string usernameInput = username.text;
+        string passwordInput = password.text;
+
+        if (usernameInput == null)
         {
             //TODO show error
             return;
         }
 
-        if (password == null)
+        if (passwordInput == null)
         {
             //TODO show error
             return;
@@ -63,13 +69,16 @@ public class LoginManager : MonoBehaviour
         {
             if (registering)
             {
-                if (CheckLoginParams())
-                    await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username.text, password.text);
+                if (!CheckLoginParams())
+                    return;
+                await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(usernameInput, passwordInput);
             }
             else
             {
-                await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username.text, password.text);
+                await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(usernameInput, passwordInput);
             }
+            mainPanel.gameObject.SetActive(false);
+            Debug.Log("Logged in as " + AuthenticationService.Instance.PlayerId);
         }catch(AuthenticationException e)
         {
             Debug.Log(e.StackTrace);
@@ -78,18 +87,18 @@ public class LoginManager : MonoBehaviour
 
     private bool CheckLoginParams()
     {
-        Regex usernameRegex = new Regex("^[a-zA-Z0-9.\\-@_]$");
+        Regex usernameRegex = new Regex("^[a-zA-Z0-9.\\-@_]{3,20}$");
         Regex passwordRegex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s])[^\\s]{8,30}$");
 
         if (!usernameRegex.IsMatch(username.text))
         {
-            //TODO print username error
+            Debug.Log("username mismatch");
             return false;
         }
 
         if (!passwordRegex.IsMatch(password.text))
         {
-            //TODO print password error
+            Debug.Log("password mismatch");
             return false;
         }
 
