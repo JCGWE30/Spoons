@@ -35,6 +35,6 @@ public class LobbyInitalizer : MonoBehaviour
 
     private async void CreateLobby()
     {
-        if(await LobbyManager.CreateLobby())
+        bool success = LobbyManager.CreateLobby();
     }
 }

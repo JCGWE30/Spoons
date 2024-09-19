@@ -22,6 +22,8 @@ public class LobbyManager : MonoBehaviour
 
     public async static Task<bool> CreateLobby()
     {
+        if (instance.currentLobby != null)
+            return false;
         try
         {
             string playerName = AuthenticationService.Instance.PlayerName;
