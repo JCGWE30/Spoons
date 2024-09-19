@@ -86,4 +86,9 @@ public class Constants
     public static readonly string SKINS_LOCKED = "Locked";
     public static readonly string SKINS_RESPONSE_EQUIP = "Skin equipped";
     public static readonly string SKINS_RESPONSE_UNEQUIP = "Skin unequipped";
+
+    //Rate limits
+    public static readonly float RATELIMIT_LOBBY_QUERY = 1f;
+    public static readonly float RATELIMIT_LOBBY_JOIN = 3f;
+    public static readonly float RATELIMIT_LOBBY_CREATE = 3f;
 }
