@@ -5,13 +5,15 @@ using UnityEngine;
 public enum TransitionMenu
 {
     MainMenu,
-    PlayMenu
+    PlayMenu,
+    LobbyMenu
 }
 
 public class MenuTransition : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject playMenu;
+    [SerializeField] private GameObject lobbyMenu;
 
     private TransitionMenu currentDestination = TransitionMenu.PlayMenu;
     private TransitionMenu newDestination;
@@ -90,6 +92,8 @@ public class MenuTransition : MonoBehaviour
                 return mainMenu.transform.Find("CameraMarker");
             case TransitionMenu.PlayMenu:
                 return playMenu.transform.Find("CameraMarker");
+            case TransitionMenu.LobbyMenu:
+                return lobbyMenu.transform.Find("CameraMarker");
         }
         return null;
     }

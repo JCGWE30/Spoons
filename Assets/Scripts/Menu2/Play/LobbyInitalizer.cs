@@ -35,6 +35,11 @@ public class LobbyInitalizer : MonoBehaviour
 
     private async void CreateLobby()
     {
-        bool success = LobbyManager.CreateLobby();
+        bool success = await LobbyManager.CreateLobby();
+
+        if (success)
+        {
+            MenuTransition.StartMove(TransitionMenu.LobbyMenu, 1f);
+        }
     }
 }

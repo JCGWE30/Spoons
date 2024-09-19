@@ -26,7 +26,7 @@ public class LobbyManager : MonoBehaviour
             return false;
         try
         {
-            string playerName = AuthenticationService.Instance.PlayerName;
+            string playerName = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer";
             CreateLobbyOptions options = new CreateLobbyOptions()
             {
                 IsPrivate = false,
