@@ -1,14 +1,17 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Transform))]
+[CustomEditor(typeof(CameraPointer))]
 public class CameraMover : Editor
 {
-
+    private void OnEnable()
+    {
+        Debug.Log("Ok here we go");
+    }
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        Transform transform = (Transform)target;
+        Transform transform = (target as CameraPointer).transform;
 
         if (transform.gameObject.name == "CameraMarker")
         {
