@@ -8,10 +8,18 @@ using UnityEngine;
 using LobbyPlayer = Unity.Services.Lobbies.Models.Player;
 using static Constants;
 
+/*
+ * Handles communication with the LobbyService
+ */
 public class LobbyManager : MonoBehaviour
 {
-    Lobby currentLobby;
-    bool isHost;
+    public static Lobby currentLobby { get { return instance._currentLobby; } }
+
+    private Lobby _currentLobby;
+    private bool isHost;
+
+    private float hearbeatTimer;
+    private float refreshTimer;
 
     private static LobbyManager instance;
 
@@ -20,9 +28,31 @@ public class LobbyManager : MonoBehaviour
         instance = this;
     }
 
+    private async void Update()
+    {
+        if (_currentLobby == null)
+            return;
+
+        if (isHost)
+        {
+            if (hearbeatTimer + LOBBY_HEARTBEAT_COOLDOWN > Time.time)
+                return;
+
+            await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
+
+            hearbeatTimer = Time.time;
+        }
+
+        if (refreshTimer + LOBBY_UPDATE_COOLDOWN > Time.time)
+            return;
+
+        _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+        refreshTimer = Time.time;
+    }
+
     public async static Task<bool> CreateLobby()
     {
-        if (instance.currentLobby != null)
+        if (instance._currentLobby != null)
             return false;
         try
         {

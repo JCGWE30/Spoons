@@ -4,6 +4,10 @@ using Unity.Services.Lobbies;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+/*
+ * Handles the lobby Browser
+ */
 public class LobbyInitalizer : MonoBehaviour
 {
     [SerializeField] private GameObject mainMarker;
@@ -40,6 +44,7 @@ public class LobbyInitalizer : MonoBehaviour
         if (success)
         {
             MenuTransition.StartMove(TransitionMenu.LobbyMenu, 1f);
+            
         }
     }
 }

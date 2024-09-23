@@ -1,10 +1,12 @@
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(CircleAssembler))]
 public class CircleSetter : Editor
 {
-    private float inputNumber;
+    private float radius;
+    private bool textState;
 
     private void OnEnable()
     {
@@ -22,7 +24,8 @@ public class CircleSetter : Editor
         if (t.childCount == 0)
             return;
 
-        inputNumber = EditorGUILayout.FloatField("Radius", inputNumber);
+        radius = EditorGUILayout.FloatField("Radius", radius);
+        textState = EditorGUILayout.Toggle("Auto Face Text", textState);
 
         if (GUILayout.Button("Arrange Children in Circle"))
         {
@@ -34,10 +37,19 @@ public class CircleSetter : Editor
             {
                 float rad = Mathf.Deg2Rad * i;
 
-                float x = Mathf.Cos(rad) * inputNumber + offX;
-                float z = Mathf.Sin(rad) * inputNumber + offZ;
+                float x = Mathf.Cos(rad) * radius + offX;
+                float z = Mathf.Sin(rad) * radius + offZ;
                 if (objectIndex < t.childCount)
                     t.GetChild(objectIndex).transform.position = new Vector3(x, t.position.y, z);
+
+                if (textState)
+                {
+                    TMP_Text name = t.GetComponentInChildren<TMP_Text>();
+                    if (name == null)
+                        return;
+                    name.transform.LookAt(t);
+                }
+
                 objectIndex++;
             }
         }
