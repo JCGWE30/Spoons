@@ -11,6 +11,11 @@ using static Constants;
 /*
  * Handles communication with the LobbyService
  */
+public struct LobbyPlayerInfo
+{
+    public string name;
+    public string skin;
+}
 public class LobbyManager : MonoBehaviour
 {
     public static Lobby currentLobby { get { return instance._currentLobby; } }
@@ -43,11 +48,11 @@ public class LobbyManager : MonoBehaviour
             hearbeatTimer = Time.time;
         }
 
-        if (refreshTimer + LOBBY_UPDATE_COOLDOWN > Time.time)
-            return;
-
-        _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
-        refreshTimer = Time.time;
+        if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
+        {
+            refreshTimer = Time.time;
+            _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+        }
     }
 
     public async static Task<bool> CreateLobby()
@@ -60,14 +65,14 @@ public class LobbyManager : MonoBehaviour
             CreateLobbyOptions options = new CreateLobbyOptions()
             {
                 IsPrivate = false,
-                Player = instance.GetPlayer(playerName),
+                Player = GetPlayer(playerName),
                 Data = new Dictionary<string, DataObject>
             {
                 { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
                 { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
             }
             };
-            await LobbyService.Instance.CreateLobbyAsync(playerName, 8, options);
+            instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", 8, options);
             return true;
         }catch(LobbyServiceException e)
         {
@@ -76,7 +81,27 @@ public class LobbyManager : MonoBehaviour
         return false;
     }
 
-    private LobbyPlayer GetPlayer(string name)
+    public async static Task<bool> JoinLobby(Lobby lobby)
+    {
+        if(instance._currentLobby != null) return false;
+
+        try
+        {
+            string playerName = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer " + lobby.Players.Count;
+            JoinLobbyByIdOptions options = new JoinLobbyByIdOptions()
+            {
+                Player = GetPlayer(playerName)
+            };
+            instance._currentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, options);
+            return true;
+        }catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+        return false;
+    }
+
+    private static LobbyPlayer GetPlayer(string name)
     {
         return new LobbyPlayer()
         {
@@ -84,6 +109,14 @@ public class LobbyManager : MonoBehaviour
             {
                 { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,name) }
             }
+        };
+    }
+
+    public static LobbyPlayerInfo GetData(LobbyPlayer player)
+    {
+        return new LobbyPlayerInfo()
+        {
+            name = player.Data[KEY_PLAYER_NAME].Value
         };
     }
 }

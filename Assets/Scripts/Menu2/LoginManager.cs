@@ -27,6 +27,17 @@ public class LoginManager : MonoBehaviour
         InitializationOptions options = new InitializationOptions();
 #if UNITY_EDITOR
         options.SetEnvironmentName("dev");
+        if (ParrelSync.ClonesManager.IsClone())
+        {
+            username.text = "superRANDOM";
+            password.text = "WoahLookAtMe113!";
+        }
+        else
+        {
+            username.text = "hitheresafe";
+            password.text = "HeyThere123!";
+        }
+        UnityServices.Instance.Initialized += AttemptLogin;
 #endif
         await UnityServices.InitializeAsync(options);
         loginButton.onClick.AddListener(AttemptLogin);

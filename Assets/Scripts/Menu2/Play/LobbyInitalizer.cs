@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,11 +19,11 @@ public class LobbyInitalizer : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private RectTransform lobbyPanel;
 
-    [SerializeField] private GameObject lobbyPrefab;
+    [SerializeField] private LobbyObjectManager lobbyPrefab;
 
     [SerializeField] private Transform menuMarker;
 
-    private void Start()
+    private void Awake()
     {
         createLobby.debounce = Constants.RATELIMIT_LOBBY_CREATE;
         refreshLobbies.debounce = Constants.RATELIMIT_LOBBY_QUERY;
@@ -30,6 +31,13 @@ public class LobbyInitalizer : MonoBehaviour
         createLobby.onClick = CreateLobby;
 
         backButton.onClick.AddListener(Back);
+
+        MenuTransition.onTransitionStart += (TransitionMenu menu) =>
+        {
+            Debug.Log("Transition starting to " + menu);
+            if (menu != TransitionMenu.PlayMenu) return; 
+            UpdateLobbies();
+        };
     }
 
     private void Back()
@@ -44,7 +52,25 @@ public class LobbyInitalizer : MonoBehaviour
         if (success)
         {
             MenuTransition.StartMove(TransitionMenu.LobbyMenu, 1f);
-            
+            LobbyLoader.UpdateLobby();
+        }
+    }
+
+    private async void UpdateLobbies()
+    {
+        foreach(Transform transform in lobbyPanel)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        QueryResponse lobbies = await LobbyService.Instance.QueryLobbiesAsync();
+        Debug.Log("Lobbies Found " + lobbies.Results.Count);
+
+        foreach(Lobby lobby in lobbies.Results)
+        {
+            LobbyObjectManager lobbyInfo = Instantiate(lobbyPrefab);
+            lobbyInfo.SetLobby(lobby);
+            lobbyInfo.transform.SetParent(lobbyPanel,false);
         }
     }
 }

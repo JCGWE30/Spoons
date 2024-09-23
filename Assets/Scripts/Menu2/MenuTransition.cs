@@ -15,7 +15,12 @@ public class MenuTransition : MonoBehaviour
     [SerializeField] private GameObject playMenu;
     [SerializeField] private GameObject lobbyMenu;
 
-    private TransitionMenu currentDestination = TransitionMenu.PlayMenu;
+    public delegate void TransitionHandler(TransitionMenu menu);
+
+    public static TransitionHandler onTransitionComplete;
+    public static TransitionHandler onTransitionStart;
+
+    private TransitionMenu currentDestination = TransitionMenu.MainMenu;
     private TransitionMenu newDestination;
 
     public static bool inMotion { get { return instance.isMoving; } }
@@ -52,6 +57,7 @@ public class MenuTransition : MonoBehaviour
                 isMoving = false;
                 GetMarker(currentDestination).parent.gameObject.SetActive(false);
                 currentDestination = newDestination;
+                onTransitionComplete?.Invoke(currentDestination);
                 return;
             }
 
@@ -67,6 +73,8 @@ public class MenuTransition : MonoBehaviour
     {
         if (inMotion)
             return;
+
+        onTransitionStart?.Invoke(destination);
 
         instance.GetMarker(destination).parent.gameObject.SetActive(true);
 

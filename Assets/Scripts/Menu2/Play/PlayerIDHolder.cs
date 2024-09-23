@@ -6,6 +6,11 @@ using TMPro;
 
 public class PlayerIDHolder : MonoBehaviour
 {
+    private void Start()
+    {
+        UpdateVisuals();
+    }
+
     private LobbyPlayer player;
     public string playerId { get { return player?.Id ?? ""; } }
 
@@ -26,15 +31,17 @@ public class PlayerIDHolder : MonoBehaviour
     public void Set(LobbyPlayer player)
     {
         this.player = player;
+        UpdateVisuals();
     }
 
     public void Wipe()
     {
         player = null;
+        UpdateVisuals();
     }
 
     private void UpdateVisuals()
     {
-
+        gameObject.SetActive(player != null);
     }
 }
