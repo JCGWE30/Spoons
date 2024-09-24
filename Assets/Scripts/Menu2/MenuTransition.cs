@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,13 @@ public class MenuTransition : MonoBehaviour
     private void Start()
     {
         instance = this;
+        foreach(TransitionMenu menu in Enum.GetValues(typeof(TransitionMenu)))
+        {
+            if (currentDestination == menu)
+                continue;
+
+            GetMarker(menu).parent.gameObject.SetActive(false);
+        }
     }
 
     void Update()

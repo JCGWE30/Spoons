@@ -19,7 +19,7 @@ public class LobbyInitalizer : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private RectTransform lobbyPanel;
 
-    [SerializeField] private LobbyObjectManager lobbyPrefab;
+    [SerializeField] private GameObject lobbyPrefab;
 
     [SerializeField] private Transform menuMarker;
 
@@ -29,6 +29,7 @@ public class LobbyInitalizer : MonoBehaviour
         refreshLobbies.debounce = Constants.RATELIMIT_LOBBY_QUERY;
 
         createLobby.onClick = CreateLobby;
+        refreshLobbies.onClick = UpdateLobbies;
 
         backButton.onClick.AddListener(Back);
 
@@ -63,12 +64,12 @@ public class LobbyInitalizer : MonoBehaviour
             Destroy(transform.gameObject);
         }
 
-        QueryResponse lobbies = await LobbyService.Instance.QueryLobbiesAsync();
-        Debug.Log("Lobbies Found " + lobbies.Results.Count);
+        List<Lobby> lobbies = await LobbyManager.GetLobbies();
+        Debug.Log("Lobbies Found " + lobbies.Count);
 
-        foreach(Lobby lobby in lobbies.Results)
+        foreach(Lobby lobby in lobbies)
         {
-            LobbyObjectManager lobbyInfo = Instantiate(lobbyPrefab);
+            LobbyObjectManager lobbyInfo = Instantiate(lobbyPrefab).GetComponent<LobbyObjectManager>();
             lobbyInfo.SetLobby(lobby);
             lobbyInfo.transform.SetParent(lobbyPanel,false);
         }

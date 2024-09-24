@@ -28,7 +28,7 @@ public class Constants
     //Spoons info
     public static readonly string SPOONS_DEALER_NAME = "DEALER";
     public static readonly string SPOONS_TRIGGER_WORD = "SPOON";
-    public static readonly int SPOON_TRIGGER_WORD_LENGTH = 5;
+    public static readonly int SPOONS_TRIGGER_WORD_LENGTH = 5;
     public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN = 2f;
     public static readonly float SPOONS_TOGGLE_VIEW_COOLDOWN_MODIFIER = 1f;
     public static readonly float SPOONS_VIEW_TIMER = 1f;
@@ -46,7 +46,7 @@ public class Constants
     public static readonly string ROUND_MODIFIER_INSTA_KILL = "The one life modifier is enabled. So be careful as you only get 1 letter before getting eliminated!";
 
     //Lobby Defaults
-    public static readonly int LOBBY_MAX_PLAYERS = 6;
+    public static readonly int LOBBY_MAX_PLAYERS = 8;
     public static readonly int LOBBY_MIN_PLAYERS = 2;
     public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 30f;
     public static readonly float LOBBY_UPDATE_COOLDOWN = 2f;

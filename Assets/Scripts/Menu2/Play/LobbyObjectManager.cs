@@ -16,7 +16,7 @@ public class LobbyObjectManager : MonoBehaviour
     {
         this.lobby = lobby;
         lobbyName.text = lobby.Name;
-        playerCount.text = lobby.Players.Count.ToString();
+        playerCount.text = lobby.Players.Count.ToString()+"/"+Constants.LOBBY_MAX_PLAYERS;
 
         joinButton.debounce = Constants.LOBBY_UPDATE_COOLDOWN;
 

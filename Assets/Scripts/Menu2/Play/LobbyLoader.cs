@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /*
  * Handles initalizing and updating player states
@@ -22,19 +23,51 @@ public class LobbyLoader : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        LobbyManager.onLobbyUpdate += UpdateLobby;
     }
 
     public static void UpdateLobby()
     {
         var lobby = LobbyManager.currentLobby;
         instance.lobbyName.text = lobby.Name;
-        int index = 0;
+
         GameObject nameHolder = instance.playerNameHolder;
-        foreach(TMP_Text text in instance.playerNameHolder.GetComponentsInChildren<TMP_Text>())
+
+        List<PlayerIDHolder> playerMarkers = instance.GetComponentsInChildren<PlayerIDHolder>().ToList();
+        playerMarkers = playerMarkers.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
+
+        int index = 0;
+        foreach (PlayerIDHolder playerID in playerMarkers)
         {
+            var player = lobby.Players[index];
+            if (PlayerIDHolder.TryGetPlayer(player.Id, out var currentPlayer))
+            {
+                currentPlayer.Set(player);
+            }
+            else
+            {
+                playerID.Set(player);
+            }
+            index++;
+        }
+
+        foreach (HoverButton button in instance.playerNameHolder.GetComponentsInChildren<HoverButton>())
+        {
+            TMP_Text text = button.GetComponentInChildren<TMP_Text>();
             if(lobby.Players.Count > index)
             {
                 var player = lobby.Players[index];
+
+                if(PlayerIDHolder.TryGetPlayer(player.Id,out var currentPlayer))
+                {
+                    button.onHover = () => currentPlayer.SetHighlightState(true);
+                    button.onUnHover = () => currentPlayer.SetHighlightState(false);
+                }
+                else
+                {
+                    button.Wipe();
+                }
+
                 var info = LobbyManager.GetData(player);
                 text.text = info.name;
             }
@@ -43,19 +76,6 @@ public class LobbyLoader : MonoBehaviour
                 text.text = string.Empty;
             }
             index++;
-        }
-        foreach(LobbyPlayer player in lobby.Players)
-        {
-            if(PlayerIDHolder.TryGetPlayer(player.Id,out var currentPlayer))
-            {
-                currentPlayer.Set(player);
-            }
-            else
-            {
-                List<PlayerIDHolder> playerMarkers = instance.GetComponentsInChildren<PlayerIDHolder>().ToList();
-                playerMarkers = playerMarkers.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
-                playerMarkers.First().Set(player);
-            }
         }
     }
 }

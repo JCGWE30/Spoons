@@ -18,6 +18,9 @@ public struct LobbyPlayerInfo
 }
 public class LobbyManager : MonoBehaviour
 {
+    public delegate void LobbyChangeEvent();
+    public static LobbyChangeEvent onLobbyUpdate;
+
     public static Lobby currentLobby { get { return instance._currentLobby; } }
 
     private Lobby _currentLobby;
@@ -28,30 +31,40 @@ public class LobbyManager : MonoBehaviour
 
     private static LobbyManager instance;
 
-    void Start()
+    void Awake()
     {
+        onLobbyUpdate = null;
         instance = this;
     }
 
     private async void Update()
     {
-        if (_currentLobby == null)
-            return;
-
-        if (isHost)
+        try
         {
-            if (hearbeatTimer + LOBBY_HEARTBEAT_COOLDOWN > Time.time)
+            if (_currentLobby == null)
                 return;
 
-            await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
+            if (isHost)
+            {
+                if (hearbeatTimer + LOBBY_HEARTBEAT_COOLDOWN > Time.time)
+                    return;
 
-            hearbeatTimer = Time.time;
+                await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
+
+                hearbeatTimer = Time.time;
+            }
+
+            if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
+            {
+                refreshTimer = Time.time;
+                _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+                Debug.Log("LobbyIsUpdate");
+                onLobbyUpdate?.Invoke();
+            }
         }
-
-        if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
+        catch (LobbyServiceException e)
         {
-            refreshTimer = Time.time;
-            _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+            Debug.Log(e);
         }
     }
 
@@ -72,7 +85,7 @@ public class LobbyManager : MonoBehaviour
                 { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
             }
             };
-            instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", 8, options);
+            instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", LOBBY_MAX_PLAYERS, options);
             return true;
         }catch(LobbyServiceException e)
         {
@@ -99,6 +112,12 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(e);
         }
         return false;
+    }
+
+    public static async Task<List<Lobby>> GetLobbies()
+    {
+        QueryResponse response = await LobbyService.Instance.QueryLobbiesAsync();
+        return response.Results;
     }
 
     private static LobbyPlayer GetPlayer(string name)
