@@ -47,6 +47,26 @@ public class PlayerIDHolder : MonoBehaviour
         UpdateVisuals();
     }
 
+    public bool TryGet(out LobbyPlayer outPlayer)
+    {
+        if (player == null)
+        {
+            outPlayer = null;
+            return false;
+        }
+        outPlayer = player;
+        return true;
+    }
+
+    public LobbyPlayer Get()
+    {
+        if (player == null)
+        {
+            return null;
+        }
+        return player;
+    }
+
     public void SetHighlightState(bool state)
     {
         outline.enabled = state;

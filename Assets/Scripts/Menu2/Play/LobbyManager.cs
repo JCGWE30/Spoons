@@ -7,6 +7,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using LobbyPlayer = Unity.Services.Lobbies.Models.Player;
 using static Constants;
+using System.Linq;
 
 /*
  * Handles communication with the LobbyService
@@ -15,16 +16,22 @@ public struct LobbyPlayerInfo
 {
     public string name;
     public string skin;
+    public bool ready;
 }
 public class LobbyManager : MonoBehaviour
 {
     public delegate void LobbyChangeEvent();
+
+    public static LobbyChangeEvent onPlayerUpdate;
     public static LobbyChangeEvent onLobbyUpdate;
+    public static LobbyChangeEvent onEnterLobby;
 
     public static Lobby currentLobby { get { return instance._currentLobby; } }
+    public static bool isHost { get { return instance._isHost; } }
 
     private Lobby _currentLobby;
-    private bool isHost;
+    private bool _isHost;
+    private bool _isReady;
 
     private float hearbeatTimer;
     private float refreshTimer;
@@ -33,7 +40,7 @@ public class LobbyManager : MonoBehaviour
 
     void Awake()
     {
-        onLobbyUpdate = null;
+        onPlayerUpdate = null;
         instance = this;
     }
 
@@ -57,9 +64,15 @@ public class LobbyManager : MonoBehaviour
             if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
             {
                 refreshTimer = Time.time;
+
+                HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id));
+
                 _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
-                Debug.Log("LobbyIsUpdate");
-                onLobbyUpdate?.Invoke();
+
+                HashSet<string> newPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id));
+
+                if(!oldPlayers.SetEquals(newPlayers))
+                    onPlayerUpdate?.Invoke();
             }
         }
         catch (LobbyServiceException e)
@@ -86,6 +99,7 @@ public class LobbyManager : MonoBehaviour
             }
             };
             instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", LOBBY_MAX_PLAYERS, options);
+            onEnterLobby?.Invoke();
             return true;
         }catch(LobbyServiceException e)
         {
@@ -106,6 +120,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(playerName)
             };
             instance._currentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, options);
+            onEnterLobby?.Invoke();
             return true;
         }catch(LobbyServiceException e)
         {
@@ -126,7 +141,8 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,name) }
+                { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,name) },
+                { KEY_PLAYER_READY, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,instance._isReady ? "1" : "0") }
             }
         };
     }
@@ -135,7 +151,20 @@ public class LobbyManager : MonoBehaviour
     {
         return new LobbyPlayerInfo()
         {
-            name = player.Data[KEY_PLAYER_NAME].Value
+            name = player.Data[KEY_PLAYER_NAME].Value,
+            ready = player.Data[KEY_PLAYER_READY].Value == "1"
         };
+    }
+
+    public static LobbyPlayer GetPlayer(string id, Lobby lobby)
+    {
+        foreach(LobbyPlayer player in lobby.Players)
+        {
+            if (player.Id == id)
+            {
+                return player;
+            }
+        }
+        return null;
     }
 }

@@ -48,8 +48,9 @@ public class Constants
     //Lobby Defaults
     public static readonly int LOBBY_MAX_PLAYERS = 8;
     public static readonly int LOBBY_MIN_PLAYERS = 2;
-    public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 30f;
-    public static readonly float LOBBY_UPDATE_COOLDOWN = 2f;
+    public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 25f;
+    public static readonly float LOBBY_UPDATE_COOLDOWN = 3f;
+    public static readonly float LOBBY_BUTTON_COOLDOWN = 1f;
 
     //Lobby Texts
     public static readonly string TEXTS_NONAME = "No name set";
@@ -66,6 +67,7 @@ public class Constants
     //Networking Keys
     public static readonly string KEY_PLAYER_NAME = "PlayerName";
     public static readonly string KEY_PLAYER_SKIN = "PlayerSkin";
+    public static readonly string KEY_PLAYER_READY = "PlayerReady";
     public static readonly string KEY_LOBBY_RELAYCODE = "RelayCode";
     public static readonly string KEY_LOBBY_MODIFIER_INSTAKILL = "StateInstaKill";
 

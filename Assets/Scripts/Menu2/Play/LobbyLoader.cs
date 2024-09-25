@@ -23,7 +23,7 @@ public class LobbyLoader : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        LobbyManager.onLobbyUpdate += UpdateLobby;
+        LobbyManager.onPlayerUpdate += UpdateLobby;
     }
 
     public static void UpdateLobby()
@@ -33,23 +33,37 @@ public class LobbyLoader : MonoBehaviour
 
         GameObject nameHolder = instance.playerNameHolder;
 
-        List<PlayerIDHolder> playerMarkers = instance.GetComponentsInChildren<PlayerIDHolder>().ToList();
-        playerMarkers = playerMarkers.OrderBy(x => Random.Range(0, int.MaxValue)).ToList();
+        var allMarkers = instance.playerHolder.GetComponentsInChildren<PlayerIDHolder>(true);
 
-        int index = 0;
-        foreach (PlayerIDHolder playerID in playerMarkers)
+        List<PlayerIDHolder> bindedMarkers = allMarkers.Where(m=>m.TryGet(out var _)).ToList();
+        Stack<PlayerIDHolder> unbindedMarkers = new Stack<PlayerIDHolder>(allMarkers.Where(m => !m.TryGet(out var _)));
+
+        Dictionary<string,LobbyPlayer> existingPlayerIds = lobby.Players.ToDictionary(p => p.Id, p => p);
+
+        Stack<LobbyPlayer> players = new Stack<LobbyPlayer>(lobby.Players);
+
+        foreach(PlayerIDHolder playerId in bindedMarkers)
         {
-            var player = lobby.Players[index];
-            if (PlayerIDHolder.TryGetPlayer(player.Id, out var currentPlayer))
-            {
-                currentPlayer.Set(player);
+            if (existingPlayerIds.Keys.Contains(playerId.Get().Id)){
+                playerId.Set(existingPlayerIds[playerId.Get().Id]);
+                continue;
             }
-            else
-            {
-                playerID.Set(player);
-            }
-            index++;
+            playerId.Wipe();
+            unbindedMarkers.Push(playerId);
         }
+
+        while(players.Count>0)
+        {
+            LobbyPlayer currentPlayer = players.Pop();
+            if(PlayerIDHolder.TryGetPlayer(currentPlayer.Id, out var _))
+            {
+                continue;
+            }
+
+            PlayerIDHolder newHolder = unbindedMarkers.Pop();
+            newHolder.Set(currentPlayer);
+        }
+        int index = 0;
 
         foreach (HoverButton button in instance.playerNameHolder.GetComponentsInChildren<HoverButton>())
         {
@@ -57,6 +71,7 @@ public class LobbyLoader : MonoBehaviour
             if(lobby.Players.Count > index)
             {
                 var player = lobby.Players[index];
+                Debug.Log("Cycling on " + player);
 
                 if(PlayerIDHolder.TryGetPlayer(player.Id,out var currentPlayer))
                 {
