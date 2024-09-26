@@ -24,6 +24,7 @@ public class LoginManager : MonoBehaviour
     // Start is called before the first frame update
     private async void Start()
     {
+        mainPanel.gameObject.SetActive(true);
         InitializationOptions options = new InitializationOptions();
 #if UNITY_EDITOR
         options.SetEnvironmentName("dev");

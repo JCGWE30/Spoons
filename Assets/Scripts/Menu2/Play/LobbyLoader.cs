@@ -14,6 +14,7 @@ using UnityEngine.UI;
  */
 public class LobbyLoader : MonoBehaviour
 {
+    [SerializeField] private GameObject mainpanel;
     [SerializeField] private GameObject playerHolder;
     [SerializeField] private GameObject playerNameHolder;
     [SerializeField] private TMP_Text lobbyName;
@@ -24,6 +25,15 @@ public class LobbyLoader : MonoBehaviour
     {
         instance = this;
         LobbyManager.onPlayerUpdate += UpdateLobby;
+        LobbyManager.onExitLobby += ExitLobby;
+
+        MenuTransition.onTransitionStart += (d) => { mainpanel.SetActive(false); };
+        MenuTransition.onTransitionComplete += (d) => { mainpanel.SetActive(d == TransitionMenu.LobbyMenu); };
+    }
+
+    private void ExitLobby()
+    {   
+        MenuTransition.StartMove(TransitionMenu.PlayMenu, 1f);
     }
 
     public static void UpdateLobby()

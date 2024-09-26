@@ -12,11 +12,15 @@ public class LobbyUIManager : MonoBehaviour
     void Start()
     {
         startButton.debounce = Constants.LOBBY_BUTTON_COOLDOWN;
+
         readyButton.debounce = Constants.LOBBY_BUTTON_COOLDOWN;
+
         leaveButton.debounce = Constants.LOBBY_BUTTON_COOLDOWN;
+        leaveButton.onClick = LeaveLobby;
 
         LobbyManager.onEnterLobby += SetupLobby;
         LobbyManager.onLobbyUpdate += UpdateStatus;
+        LobbyManager.onPlayerUpdate += UpdateStatus;
 
     }
 
@@ -24,6 +28,15 @@ public class LobbyUIManager : MonoBehaviour
     {
         startButton.gameObject.SetActive(LobbyManager.isHost);
         UpdateStatus();
+    }
+    private void LeaveLobby()
+    {
+        LobbyManager.LeaveLobby();
+    }
+
+    private void ReadyUp()
+    {
+        LobbyManager.ReadyToggle();
     }
 
     private void UpdateStatus()

@@ -25,6 +25,7 @@ public class LobbyManager : MonoBehaviour
     public static LobbyChangeEvent onPlayerUpdate;
     public static LobbyChangeEvent onLobbyUpdate;
     public static LobbyChangeEvent onEnterLobby;
+    public static LobbyChangeEvent onExitLobby;
 
     public static Lobby currentLobby { get { return instance._currentLobby; } }
     public static bool isHost { get { return instance._isHost; } }
@@ -56,20 +57,20 @@ public class LobbyManager : MonoBehaviour
                 if (hearbeatTimer + LOBBY_HEARTBEAT_COOLDOWN > Time.time)
                     return;
 
-                await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
-
                 hearbeatTimer = Time.time;
+
+                await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
             }
 
             if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
             {
                 refreshTimer = Time.time;
 
-                HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id));
+                HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY]));
 
                 _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
 
-                HashSet<string> newPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id));
+                HashSet<string> newPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY]));
 
                 if(!oldPlayers.SetEquals(newPlayers))
                     onPlayerUpdate?.Invoke();
@@ -77,6 +78,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            LobbyFail();
             Debug.Log(e);
         }
     }
@@ -99,6 +101,7 @@ public class LobbyManager : MonoBehaviour
             }
             };
             instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", LOBBY_MAX_PLAYERS, options);
+            instance._isHost = true;
             onEnterLobby?.Invoke();
             return true;
         }catch(LobbyServiceException e)
@@ -127,6 +130,59 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(e);
         }
         return false;
+    }
+
+    public async static void ReadyToggle()
+    {
+        try
+        {
+            string name = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer";
+
+            LobbyPlayer player = GetPlayer(name);
+            player.Data[KEY_PLAYER_READY] = new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, !instance._isReady ? "1" : "0");
+
+            UpdatePlayerOptions options = new UpdatePlayerOptions()
+            {
+                Data = player.Data
+            };
+
+            await LobbyService.Instance.UpdatePlayerAsync(instance._currentLobby.Id, AuthenticationService.Instance.PlayerId, options);
+            instance._isReady = !instance._isReady;
+        } catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public static async void LeaveLobby()
+    {
+        try
+        {
+            if (instance._currentLobby == null)
+                return;
+
+            if (instance._isHost)
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(instance._currentLobby.Id);
+            }
+            else
+            {
+                await LobbyService.Instance.RemovePlayerAsync(instance._currentLobby.Id, AuthenticationService.Instance.PlayerId);
+            }
+            instance._isHost = false;
+            instance._currentLobby = null;
+            onExitLobby?.Invoke();
+        }catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    private void LobbyFail()
+    {
+        onExitLobby?.Invoke();
+        _isHost = false;
+        _currentLobby = null;
     }
 
     public static async Task<List<Lobby>> GetLobbies()

@@ -35,7 +35,6 @@ public class LobbyInitalizer : MonoBehaviour
 
         MenuTransition.onTransitionStart += (TransitionMenu menu) =>
         {
-            Debug.Log("Transition starting to " + menu);
             if (menu != TransitionMenu.PlayMenu) return; 
             UpdateLobbies();
         };
