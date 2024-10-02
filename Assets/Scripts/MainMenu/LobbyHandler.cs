@@ -118,7 +118,7 @@ public class LobbyHandler : MonoBehaviour
             if (isStarting)
                 return;
             isStarting = true;
-            string code = await RelayManager.CreateGame(lobby.Players.Count, localName);
+            string code = await OldRelayManager.CreateGame(lobby.Players.Count, localName);
             Debug.Log("Starting game with relay code " + code + " " + KEY_LOBBY_RELAYCODE);
             await LobbyService.Instance.UpdateLobbyAsync(lobby.Id, new UpdateLobbyOptions()
             {
@@ -254,7 +254,7 @@ public class LobbyHandler : MonoBehaviour
     private async void JoinGame(string relayCode)
     {
         if(!isHost)
-            await RelayManager.JoinRelay(relayCode, localName);
+            await OldRelayManager.JoinRelay(relayCode, localName);
         onEnterGame?.Invoke();
         onEnterGame = null;
         onUpdate = null;

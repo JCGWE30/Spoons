@@ -8,6 +8,9 @@ using UnityEngine;
 using LobbyPlayer = Unity.Services.Lobbies.Models.Player;
 using static Constants;
 using System.Linq;
+using Menu2.Play;
+using UnityEngine.SceneManagement;
+using WebSocketSharp;
 
 /*
  * Handles communication with the LobbyService
@@ -27,15 +30,18 @@ public class LobbyManager : MonoBehaviour
     public static LobbyChangeEvent onEnterLobby;
     public static LobbyChangeEvent onExitLobby;
 
-    public static Lobby currentLobby { get { return instance._currentLobby; } }
-    public static bool isHost { get { return instance._isHost; } }
+    public static Lobby currentLobby => instance._currentLobby;
+    public static bool isHost => instance._isHost;
+    public static bool isReady => instance._isReady;
 
     private Lobby _currentLobby;
     private bool _isHost;
     private bool _isReady;
+    
+    private LobbyPlayer _localPlayer;
 
-    private float hearbeatTimer;
-    private float refreshTimer;
+    private float _heartbeatTimer;
+    private float _refreshTimer;
 
     private static LobbyManager instance;
 
@@ -54,32 +60,43 @@ public class LobbyManager : MonoBehaviour
 
             if (isHost)
             {
-                if (hearbeatTimer + LOBBY_HEARTBEAT_COOLDOWN > Time.time)
-                    return;
+                if (_heartbeatTimer + LOBBY_HEARTBEAT_COOLDOWN < Time.time)
+                {
+                    _heartbeatTimer = Time.time;
 
-                hearbeatTimer = Time.time;
-
-                await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
+                    await LobbyService.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
+                }
             }
 
-            if (refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
+            if (_refreshTimer + LOBBY_UPDATE_COOLDOWN < Time.time)
             {
-                refreshTimer = Time.time;
+                _refreshTimer = Time.time;
 
-                HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY]));
+                HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY].Value));
 
                 _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
 
-                HashSet<string> newPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY]));
+                HashSet<string> newPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY].Value));
 
                 if(!oldPlayers.SetEquals(newPlayers))
                     onPlayerUpdate?.Invoke();
+
+                if (_currentLobby.Data[KEY_LOBBY_RELAYCODE].Value != "0")
+                {
+                    Debug.Log("Trying Relay Code");
+                    bool success = await RelayManager.JoinGame(_currentLobby.Data[KEY_LOBBY_RELAYCODE].Value);
+
+                    if (success)
+                    {
+                        SceneManager.LoadScene("Spoons");
+                    }
+                }
             }
         }
         catch (LobbyServiceException e)
         {
-            LobbyFail();
             Debug.Log(e);
+            LobbyFail();
         }
     }
 
@@ -90,10 +107,11 @@ public class LobbyManager : MonoBehaviour
         try
         {
             string playerName = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer";
+            var player = GetPlayer(playerName);
             CreateLobbyOptions options = new CreateLobbyOptions()
             {
                 IsPrivate = false,
-                Player = GetPlayer(playerName),
+                Player = player,
                 Data = new Dictionary<string, DataObject>
             {
                 { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
@@ -102,6 +120,7 @@ public class LobbyManager : MonoBehaviour
             };
             instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", LOBBY_MAX_PLAYERS, options);
             instance._isHost = true;
+            instance._localPlayer = player;
             onEnterLobby?.Invoke();
             return true;
         }catch(LobbyServiceException e)
@@ -118,11 +137,13 @@ public class LobbyManager : MonoBehaviour
         try
         {
             string playerName = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer " + lobby.Players.Count;
+            var player = GetPlayer(playerName);
             JoinLobbyByIdOptions options = new JoinLobbyByIdOptions()
             {
-                Player = GetPlayer(playerName)
+                Player = player
             };
             instance._currentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, options);
+            instance._localPlayer = player;
             onEnterLobby?.Invoke();
             return true;
         }catch(LobbyServiceException e)
@@ -132,13 +153,11 @@ public class LobbyManager : MonoBehaviour
         return false;
     }
 
-    public async static void ReadyToggle()
+    public static async Task ReadyToggle()
     {
         try
         {
-            string name = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer";
-
-            LobbyPlayer player = GetPlayer(name);
+            var player = instance._localPlayer;
             player.Data[KEY_PLAYER_READY] = new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, !instance._isReady ? "1" : "0");
 
             UpdatePlayerOptions options = new UpdatePlayerOptions()
@@ -147,6 +166,7 @@ public class LobbyManager : MonoBehaviour
             };
 
             await LobbyService.Instance.UpdatePlayerAsync(instance._currentLobby.Id, AuthenticationService.Instance.PlayerId, options);
+
             instance._isReady = !instance._isReady;
         } catch (LobbyServiceException e)
         {
@@ -171,6 +191,7 @@ public class LobbyManager : MonoBehaviour
             }
             instance._isHost = false;
             instance._currentLobby = null;
+            instance._localPlayer = null;
             onExitLobby?.Invoke();
         }catch(LobbyServiceException e)
         {
@@ -178,9 +199,32 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public static async void StartGame()
+    {
+        if(!isHost)
+            return;
+        
+        string code = await RelayManager.CreateGame(currentLobby.Players.Count);
+        
+        if(code.IsNullOrEmpty())
+            return;
+        
+        Debug.Log("Code is valid with "+code);
+
+        instance._currentLobby.Data[KEY_LOBBY_RELAYCODE] = new DataObject(DataObject.VisibilityOptions.Member,code);
+        UpdateLobbyOptions options = new UpdateLobbyOptions()
+        {
+            IsLocked = true,
+            Data = instance._currentLobby.Data
+        };
+
+        await LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id, options);
+    }
+
     private void LobbyFail()
     {
         onExitLobby?.Invoke();
+        _localPlayer = null;
         _isHost = false;
         _currentLobby = null;
     }

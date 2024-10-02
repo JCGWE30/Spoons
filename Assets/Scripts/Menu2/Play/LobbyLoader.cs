@@ -73,34 +73,5 @@ public class LobbyLoader : MonoBehaviour
             PlayerIDHolder newHolder = unbindedMarkers.Pop();
             newHolder.Set(currentPlayer);
         }
-        int index = 0;
-
-        foreach (HoverButton button in instance.playerNameHolder.GetComponentsInChildren<HoverButton>())
-        {
-            TMP_Text text = button.GetComponentInChildren<TMP_Text>();
-            if(lobby.Players.Count > index)
-            {
-                var player = lobby.Players[index];
-                Debug.Log("Cycling on " + player);
-
-                if(PlayerIDHolder.TryGetPlayer(player.Id,out var currentPlayer))
-                {
-                    button.onHover = () => currentPlayer.SetHighlightState(true);
-                    button.onUnHover = () => currentPlayer.SetHighlightState(false);
-                }
-                else
-                {
-                    button.Wipe();
-                }
-
-                var info = LobbyManager.GetData(player);
-                text.text = info.name;
-            }
-            else
-            {
-                text.text = string.Empty;
-            }
-            index++;
-        }
     }
 }

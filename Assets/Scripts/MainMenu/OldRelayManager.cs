@@ -8,7 +8,7 @@ using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class RelayManager : MonoBehaviour
+public class OldRelayManager : MonoBehaviour
 {
     public static RelayServerData relayData;
     public static string relayCode;
@@ -16,7 +16,7 @@ public class RelayManager : MonoBehaviour
     public static string localName;
     public static int lobbySize;
 
-    private static RelayManager instance;
+    private static OldRelayManager instance;
     private void Start()
     {
         instance = this;

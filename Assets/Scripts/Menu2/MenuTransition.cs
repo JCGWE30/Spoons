@@ -40,6 +40,8 @@ public class MenuTransition : MonoBehaviour
 
     private void Start()
     {
+        onTransitionStart = null;
+        onTransitionComplete = null;    
         instance = this;
         foreach(TransitionMenu menu in Enum.GetValues(typeof(TransitionMenu)))
         {

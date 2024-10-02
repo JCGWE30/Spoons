@@ -49,7 +49,7 @@ public class Constants
     public static readonly int LOBBY_MAX_PLAYERS = 8;
     public static readonly int LOBBY_MIN_PLAYERS = 2;
     public static readonly float LOBBY_HEARTBEAT_COOLDOWN = 25f;
-    public static readonly float LOBBY_UPDATE_COOLDOWN = 3f;
+    public static readonly float LOBBY_UPDATE_COOLDOWN = 1f;
     public static readonly float LOBBY_BUTTON_COOLDOWN = 1f;
 
     //Lobby Texts

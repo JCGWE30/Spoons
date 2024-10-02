@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Menu2.Play;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -99,7 +100,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Player Join");
         playersInRound[player.OwnerClientId] = player;
 
-        if (playersInRound.Count == RelayManager.lobbySize)
+        if (playersInRound.Count == RelayManager.playerCount)
         {
             StartGame();
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
@@ -94,8 +95,10 @@ public class Player : NetworkBehaviour
     {
         if (IsOwner)
         {
-            Debug.Log("My name is " + RelayManager.localName);
-            SetNameRpc(RelayManager.localName);
+            string name = AuthenticationService.Instance.PlayerName ?? "SpoonsPlayer " + OwnerClientId;
+            
+            Debug.Log("My name is " + name);
+            SetNameRpc(name);
             SetSkinRpc(SkinsHandler.ActiveSkin);
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Menu2.Play;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
@@ -11,23 +12,22 @@ using UnityEngine.SceneManagement;
 public class SpoonsNetworker : MonoBehaviour
 {
     private NetworkManager manager = NetworkManager.Singleton;
-    private async void Start()
+    private void Start()
     {
         manager = NetworkManager.Singleton;
-
+        
         if (RelayManager.isHost)
         {
-            manager.GetComponent<UnityTransport>().SetRelayServerData(RelayManager.relayData);
-            Debug.Log("Starting host");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(RelayManager.serverData);
             NetworkManager.Singleton.StartHost();
             SetupServerEvents();
         }
         else
         {
-            JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(RelayManager.relayCode);
-            manager.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "wss"));
-
-            Debug.Log("Starting client");
+            var serverData = new RelayServerData(RelayManager.joinAllocation, "wss");
+            
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
+            
             NetworkManager.Singleton.StartClient();
             manager.OnClientDisconnectCallback += HandleServerStop;
         }
@@ -42,7 +42,7 @@ public class SpoonsNetworker : MonoBehaviour
 
     private void HandleConnection(ulong id)
     {
-        if (manager.ConnectedClients.Count > RelayManager.lobbySize)
+        if (manager.ConnectedClients.Count > RelayManager.playerCount)
         {
             NetworkManager.Singleton.DisconnectClient(id, Constants.NETWORK_DISCONNECT_MESSAGE);
         }
