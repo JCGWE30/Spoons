@@ -6294,6 +6294,8 @@ GameObject:
   - component: {fileID: 690695337}
   - component: {fileID: 690695336}
   - component: {fileID: 690695335}
+  - component: {fileID: 690695338}
+  - component: {fileID: 690695339}
   m_Layer: 5
   m_Name: OneLife
   m_TagString: Untagged
@@ -6403,6 +6405,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690695333}
   m_CullTransparentMesh: 1
+--- !u!114 &690695338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690695333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c80c8bab4a0824fba2ef4d13a1e2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifier: 0
+--- !u!114 &690695339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690695333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32407726710b80e429961f740705017c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debounce: 0
 --- !u!1 &698517415
 GameObject:
   m_ObjectHideFlags: 0
@@ -11815,6 +11843,8 @@ GameObject:
   - component: {fileID: 1248788322}
   - component: {fileID: 1248788321}
   - component: {fileID: 1248788320}
+  - component: {fileID: 1248788323}
+  - component: {fileID: 1248788324}
   m_Layer: 5
   m_Name: Infinite Deck
   m_TagString: Untagged
@@ -11924,6 +11954,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248788318}
   m_CullTransparentMesh: 1
+--- !u!114 &1248788323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248788318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c80c8bab4a0824fba2ef4d13a1e2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifier: 1
+--- !u!114 &1248788324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248788318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32407726710b80e429961f740705017c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debounce: 0
 --- !u!1 &1256379581
 GameObject:
   m_ObjectHideFlags: 0
@@ -13774,6 +13830,8 @@ GameObject:
   - component: {fileID: 1429933941}
   - component: {fileID: 1429933940}
   - component: {fileID: 1429933939}
+  - component: {fileID: 1429933942}
+  - component: {fileID: 1429933943}
   m_Layer: 5
   m_Name: Timed
   m_TagString: Untagged
@@ -13883,6 +13941,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1429933937}
   m_CullTransparentMesh: 1
+--- !u!114 &1429933942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429933937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c80c8bab4a0824fba2ef4d13a1e2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifier: 4
+--- !u!114 &1429933943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429933937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32407726710b80e429961f740705017c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debounce: 0
 --- !u!1 &1441926814
 GameObject:
   m_ObjectHideFlags: 0
@@ -14993,6 +15077,8 @@ GameObject:
   - component: {fileID: 1507308922}
   - component: {fileID: 1507308921}
   - component: {fileID: 1507308920}
+  - component: {fileID: 1507308923}
+  - component: {fileID: 1507308924}
   m_Layer: 5
   m_Name: OneSpoon
   m_TagString: Untagged
@@ -15102,6 +15188,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507308918}
   m_CullTransparentMesh: 1
+--- !u!114 &1507308923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507308918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c80c8bab4a0824fba2ef4d13a1e2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifier: 2
+--- !u!114 &1507308924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507308918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32407726710b80e429961f740705017c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debounce: 0
 --- !u!1 &1519593961
 GameObject:
   m_ObjectHideFlags: 0
@@ -16681,6 +16793,8 @@ GameObject:
   - component: {fileID: 1624515488}
   - component: {fileID: 1624515487}
   - component: {fileID: 1624515486}
+  - component: {fileID: 1624515489}
+  - component: {fileID: 1624515490}
   m_Layer: 5
   m_Name: FullVision
   m_TagString: Untagged
@@ -16790,6 +16904,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1624515484}
   m_CullTransparentMesh: 1
+--- !u!114 &1624515489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624515484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c80c8bab4a0824fba2ef4d13a1e2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifier: 3
+--- !u!114 &1624515490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624515484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32407726710b80e429961f740705017c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debounce: 0
 --- !u!1 &1633165864
 GameObject:
   m_ObjectHideFlags: 0

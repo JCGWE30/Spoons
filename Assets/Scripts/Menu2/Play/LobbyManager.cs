@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
@@ -9,12 +8,19 @@ using LobbyPlayer = Unity.Services.Lobbies.Models.Player;
 using static Constants;
 using System.Linq;
 using Menu2.Play;
+using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using WebSocketSharp;
 
 /*
  * Handles communication with the LobbyService
  */
+public struct LobbyInfo
+{
+    public int playerCount;
+    
+    public Dictionary<int,bool> modifiers;
+}
 public struct LobbyPlayerInfo
 {
     public string name;
@@ -45,6 +51,8 @@ public class LobbyManager : MonoBehaviour
 
     private static LobbyManager instance;
 
+    public static LobbyInfo lobbyInfo;
+
     void Awake()
     {
         onPlayerUpdate = null;
@@ -72,6 +80,10 @@ public class LobbyManager : MonoBehaviour
             {
                 _refreshTimer = Time.time;
 
+                
+                //Checking if players have been modified
+                string oldModifiers = _currentLobby.Data[KEY_LOBBY_MODIFIER].Value;
+                
                 HashSet<string> oldPlayers = new HashSet<string>(_currentLobby.Players.Select(p => p.Id + p.Data[KEY_PLAYER_READY].Value));
 
                 _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
@@ -80,6 +92,12 @@ public class LobbyManager : MonoBehaviour
 
                 if(!oldPlayers.SetEquals(newPlayers))
                     onPlayerUpdate?.Invoke();
+                
+                //Checking if the lobby has been modified
+                string newModifiers = _currentLobby.Data[KEY_LOBBY_MODIFIER].Value;
+                
+                if(!oldModifiers.Equals(newModifiers))
+                    onLobbyUpdate?.Invoke();
 
                 if (_currentLobby.Data[KEY_LOBBY_RELAYCODE].Value != "0")
                 {
@@ -115,7 +133,7 @@ public class LobbyManager : MonoBehaviour
                 Data = new Dictionary<string, DataObject>
             {
                 { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
-                { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
+                { KEY_LOBBY_MODIFIER , new DataObject(DataObject.VisibilityOptions.Public,"{}") }
             }
             };
             instance._currentLobby = await LobbyService.Instance.CreateLobbyAsync(playerName+"'s Lobby", LOBBY_MAX_PLAYERS, options);
@@ -217,8 +235,43 @@ public class LobbyManager : MonoBehaviour
             IsLocked = true,
             Data = instance._currentLobby.Data
         };
-
+        instance.LoadLobbyInfo();
+        
         await LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id, options);
+    }
+
+    public static async Task<bool> SetModifier(int index, bool state)
+    {
+        try
+        {
+            Dictionary<int, bool> modifiers =
+                JsonConvert.DeserializeObject<Dictionary<int, bool>>(instance._currentLobby.Data[KEY_LOBBY_MODIFIER]
+                    .Value);
+            
+            modifiers[index] = state;
+            
+            string serializedOut = JsonConvert.SerializeObject(modifiers);
+            
+            instance._currentLobby.Data[KEY_LOBBY_MODIFIER] = new DataObject(DataObject.VisibilityOptions.Public,serializedOut);
+            
+            UpdateLobbyOptions options = new UpdateLobbyOptions()
+            {
+                Data = instance._currentLobby.Data
+            };
+            
+            Debug.Log(serializedOut);
+            
+            await LobbyService.Instance.UpdateLobbyAsync(instance._currentLobby.Id, options);
+            
+            onLobbyUpdate?.Invoke();
+            
+            return true;
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+            return false;
+        }
     }
 
     private void LobbyFail()
@@ -256,15 +309,15 @@ public class LobbyManager : MonoBehaviour
         };
     }
 
-    public static LobbyPlayer GetPlayer(string id, Lobby lobby)
+    private void LoadLobbyInfo()
     {
-        foreach(LobbyPlayer player in lobby.Players)
+        Dictionary<int, bool> incomingModifiers =
+            JsonConvert.DeserializeObject<Dictionary<int, bool>>(instance._currentLobby.Data[KEY_LOBBY_MODIFIER].Value);
+
+        lobbyInfo = new LobbyInfo()
         {
-            if (player.Id == id)
-            {
-                return player;
-            }
-        }
-        return null;
+            playerCount = instance._currentLobby.Players.Count,
+            modifiers = incomingModifiers
+        };
     }
 }

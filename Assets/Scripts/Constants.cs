@@ -69,7 +69,14 @@ public class Constants
     public static readonly string KEY_PLAYER_SKIN = "PlayerSkin";
     public static readonly string KEY_PLAYER_READY = "PlayerReady";
     public static readonly string KEY_LOBBY_RELAYCODE = "RelayCode";
-    public static readonly string KEY_LOBBY_MODIFIER_INSTAKILL = "StateInstaKill";
+    public static readonly string KEY_LOBBY_MODIFIER = "LobbyModifiers";
+    
+    //Modifier Keys
+    public static readonly int KEY_MODIFIER_INSTAKILL = (int) ModifierEnum.instakill;
+    public static readonly int KEY_MODIFIER_INFINIDECK = (int) ModifierEnum.infinideck;
+    public static readonly int KEY_MODIFIER_ONESPOON = (int) ModifierEnum.onespoon;
+    public static readonly int KEY_MODIFIER_FULLVISION = (int) ModifierEnum.fullvision;
+    public static readonly int KEY_MODIFIER_TIMED = (int) ModifierEnum.timed;
 
     //Leaderboards
     public static readonly string LEADERBOARD_ID = "4_of_a_kinds";

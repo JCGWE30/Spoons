@@ -75,7 +75,7 @@ public class LobbyHandler : MonoBehaviour
             {
                 fetchTimer = LOBBY_UPDATE_COOLDOWN + Time.time;
                 lobby = await LobbyService.Instance.GetLobbyAsync(lobby.Id);
-                isInstaKill = lobby.Data[KEY_LOBBY_MODIFIER_INSTAKILL].Value == "true";
+                isInstaKill = lobby.Data[KEY_LOBBY_MODIFIER].Value == "true";
                 onUpdate?.Invoke(lobby);
                 if (lobby.Data[KEY_LOBBY_RELAYCODE].Value != "0")
                 {
@@ -147,7 +147,7 @@ public class LobbyHandler : MonoBehaviour
             {
                 Data = new Dictionary<string, DataObject>
             {
-                { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,stateString) }
+                { KEY_LOBBY_MODIFIER , new DataObject(DataObject.VisibilityOptions.Public,stateString) }
             }
             });
         }catch(LobbyServiceException e)
@@ -224,7 +224,7 @@ public class LobbyHandler : MonoBehaviour
                 Data = new Dictionary<string, DataObject>
             {
                 { KEY_LOBBY_RELAYCODE , new DataObject(DataObject.VisibilityOptions.Member,"0") },
-                { KEY_LOBBY_MODIFIER_INSTAKILL , new DataObject(DataObject.VisibilityOptions.Public,"0") }
+                { KEY_LOBBY_MODIFIER , new DataObject(DataObject.VisibilityOptions.Public,"0") }
             }
             };
             fetchTimer = Time.time;

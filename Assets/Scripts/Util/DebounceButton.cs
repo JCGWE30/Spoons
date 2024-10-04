@@ -51,4 +51,9 @@ public class DebounceButton : MonoBehaviour
         _debounceTimer = Time.time;
         onClick?.Invoke();
     }
+
+    public void Trigger()
+    {
+        _debounceTimer = Time.time;
+    }
 }
